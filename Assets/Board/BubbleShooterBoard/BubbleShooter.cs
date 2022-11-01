@@ -1,11 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 
 public class Shooter : MonoBehaviour
 {
-    [SerializeField] private BoardBehavior board;
+    [SerializeField] private BubbleShooterBoard bubbleShooterBoard;
     [SerializeField] private BubbleBehavior bubblePrefab;
     [SerializeField] private float shotSpeed;
 
@@ -26,9 +24,9 @@ public class Shooter : MonoBehaviour
 
         //Change this positions
         BubbleBehavior instance = Instantiate(bubblePrefab, transform.position, Quaternion.identity);
-        instance.transform.SetParent(board.transform);
+        instance.transform.SetParent(bubbleShooterBoard.transform);
 
-        instance.OnBubblePlaced += board.FixBubble;
+        instance.OnBubblePlaced += bubbleShooterBoard.FixBubble;
         instance.ShotBubble(direction * shotSpeed);
     }
 }
