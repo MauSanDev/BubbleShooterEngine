@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e99f64af172cb24fa1995d4155fae93, type: 3}
+  m_Name: LevelData
+  m_EditorClassIdentifier: 
+  bubbleReference:
+  - id: blue
+    bubble: {fileID: 9179874367132262074, guid: b4ef784c2c786264d8accfde59661805, type: 3}
+  - id: red
+    bubble: {fileID: 9143186253391445646, guid: 4f5d9b3413028d148be6590e26cadc14, type: 3}
+  - id: pink
+    bubble: {fileID: 9143186253391445646, guid: c2bff63e47c9f9345adc37a9d192160e, type: 3}
+  - id: green
+    bubble: {fileID: 9143186253391445646, guid: d4685c60e8e55c24ca6096ded1b4d20e, type: 3}
+  - id: yellow
+    bubble: {fileID: 9143186253391445646, guid: 6c505d876f457544bbbb9e8a6891a60a, type: 3}
+  coordinates:
+  - x: 0
+    y: 0
+    bubbleId: blue
+  - x: 1
+    y: 0
+    bubbleId: red
+  - x: 2
+    y: 0
+    bubbleId: green
+  - x: 3
+    y: 0
+    bubbleId: pink
+  - x: 4
+    y: 0
+    bubbleId: yellow
+  - x: 5
+    y: 0
+    bubbleId: green
+  - x: 0
+    y: 1
+    bubbleId: blue
+  - x: 1
+    y: 1
+    bubbleId: red
+  - x: 2
+    y: 1
+    bubbleId: pink
+  - x: 3
+    y: 1
+    bubbleId: red
+  - x: 4
+    y: 1
+    bubbleId: yellow
+  - x: 0
+    y: 2
+    bubbleId: yellow
+  - x: 1
+    y: 2
+    bubbleId: blue
+  - x: 2
+    y: 2
+    bubbleId: green
+  - x: 3
+    y: 2
+    bubbleId: pink
+  - x: 4
+    y: 2
+    bubbleId: red
+  - x: 5
+    y: 2
+    bubbleId: pink
