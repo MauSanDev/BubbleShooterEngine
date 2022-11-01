@@ -28,7 +28,7 @@ public class BoardBehavior : MonoBehaviour //This could also be generic dependin
     {
         foreach (var coordinate in levelData.coordinates)
         {
-            BubbleBehavior bubblePrefab = bubbleDatabase.GetBubbleById(coordinate.bubbleId);
+            BubbleBehavior bubblePrefab = bubbleDatabase.GetPieceById(coordinate.bubbleId);
 
             if (bubblePrefab == null)
             {

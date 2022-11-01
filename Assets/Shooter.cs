@@ -9,8 +9,6 @@ public class Shooter : MonoBehaviour
     [SerializeField] private BubbleBehavior bubblePrefab;
     [SerializeField] private float shotSpeed;
 
-    public event Action OnBubblePlaced;
-
     // Update is called once per frame
     void Update()
     {
@@ -32,7 +30,5 @@ public class Shooter : MonoBehaviour
 
         instance.OnBubblePlaced += board.FixBubble;
         instance.ShotBubble(direction * shotSpeed);
-
-        
     }
 }

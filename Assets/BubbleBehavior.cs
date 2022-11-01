@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class BubbleBehavior : MonoBehaviour
+public class BubbleBehavior : MonoBehaviour, IPiece
 {
     [SerializeField] private Rigidbody2D body;
     public event Action<BubbleBehavior> OnBubblePlaced;
