@@ -1,7 +1,7 @@
 
 using UnityEngine;
 
-public class Shooter : MonoBehaviour
+public class BubbleShooter : MonoBehaviour
 {
     [SerializeField] private BubbleShooterBoard bubbleShooterBoard;
     [SerializeField] private BubbleBehavior bubblePrefab;

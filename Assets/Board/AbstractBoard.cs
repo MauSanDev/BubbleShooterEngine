@@ -8,6 +8,23 @@ public abstract class AbstractBoard<TPiece> : MonoBehaviour where TPiece : MonoB
 
     [Header("Components")] 
     [SerializeField] protected Grid gridComponent = null;
+
+    private IAlignmentStrategy alignmentStrategy;
+
+    private void Awake()
+    {
+        DefineAlignmentStrategy();
+    }
+
+    private void DefineAlignmentStrategy()
+    {
+        switch (gridComponent.cellLayout)
+        {
+            case GridLayout.CellLayout.Hexagon:
+                alignmentStrategy = new HexagonalAlignmentStrategy();
+                return;
+        }
+    }
     
     private void AlignAllChildren()
     {
@@ -22,22 +39,16 @@ public abstract class AbstractBoard<TPiece> : MonoBehaviour where TPiece : MonoB
     {
         foreach (var coordinate in levelData.coordinates)
         {
-            TPiece bubblePrefab = pieceDatabase.GetPieceById(coordinate.bubbleId);
+            TPiece bubblePrefab = pieceDatabase.GetPieceById(coordinate.pieceId);
 
             if (bubblePrefab == null)
             {
-                Debug.LogError($"{GetType()} :: The piece with id {coordinate.bubbleId} wasn't found. - Position: {coordinate.coordinates}");
-                return;
+                Debug.LogError($"{GetType()} :: The piece with id {coordinate.pieceId} wasn't found. - Position: {coordinate.coordinates}");
+                continue;
             }
             
             TPiece pieceInstance = Instantiate(bubblePrefab, gridComponent.transform);
-
-            //TODO: Create a class named AlignmentStrategy depending on the grid layout
-            float x = coordinate.coordinates.y % 2 == 0 ? coordinate.coordinates.x : coordinate.coordinates.x + .5f;
-            float y = -(coordinate.coordinates.y * .75f);
-            Vector3 position = new Vector3(x, y, 1);
-
-            pieceInstance.transform.localPosition = position;
+            pieceInstance.transform.localPosition = alignmentStrategy.GetPiecePosition(coordinate.coordinates);
             
             OnPieceCreated(pieceInstance);
         }

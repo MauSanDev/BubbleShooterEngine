@@ -6,12 +6,12 @@ using UnityEngine;
 public class LevelData : ScriptableObject
 {
     [Header("Board Info")]
-    [SerializeField] public List<BubbleCoordinate> coordinates;
+    [SerializeField] public List<PieceCoordinate> coordinates;
     
     [Serializable]
-    public class BubbleCoordinate
+    public class PieceCoordinate
     {
         [SerializeField] public Vector2Int coordinates;
-        [SerializeField] public string bubbleId;
+        [SerializeField] public string pieceId;
     }
 }
