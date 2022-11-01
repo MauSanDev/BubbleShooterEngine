@@ -12,4 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58dcd792750d06848801086b848c3131, type: 3}
   m_Name: BubbleDatabase
   m_EditorClassIdentifier: 
-  bubbleReferences: []
+  pieceReferences:
+  - id: blue
+    piecePrefab: {fileID: 6746420513356153506, guid: b4ef784c2c786264d8accfde59661805, type: 3}
+  - id: red
+    piecePrefab: {fileID: 6640119888683786902, guid: 4f5d9b3413028d148be6590e26cadc14, type: 3}
+  - id: green
+    piecePrefab: {fileID: 6640119888683786902, guid: d4685c60e8e55c24ca6096ded1b4d20e, type: 3}
+  - id: yellow
+    piecePrefab: {fileID: 6640119888683786902, guid: 6c505d876f457544bbbb9e8a6891a60a, type: 3}
+  - id: pink
+    piecePrefab: {fileID: 6640119888683786902, guid: c2bff63e47c9f9345adc37a9d192160e, type: 3}
