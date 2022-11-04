@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "LevelData", menuName = "Level Data")]
-public class LevelData : ScriptableObject
+public abstract class AbstractLevelData : ScriptableObject
 {
     [Header("Board Info")]
     [SerializeField] public List<PieceCoordinate> coordinates;

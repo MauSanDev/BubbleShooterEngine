@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class BubbleShooterBoard : AbstractBoard<BubbleBehavior> //This could also be generic depending on the match 3 strategy
 {
-    [SerializeField] private LevelData levelData; //This should be removed and settled by the populate
+    [SerializeField] private AbstractLevelData abstractLevelData; //This should be removed and settled by the populate
 
     private void Start()
     {
-        PopulateBoard(levelData);
+        PopulateBoard(abstractLevelData);
     }
 
     private void FixBubble(BubbleBehavior bubbleBehavior)

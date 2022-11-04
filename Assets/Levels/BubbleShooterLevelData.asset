@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e99f64af172cb24fa1995d4155fae93, type: 3}
-  m_Name: LevelData
+  m_Script: {fileID: 11500000, guid: 35704c5a9fd78d04483544f2201e79b0, type: 3}
+  m_Name: BubbleShooterLevelData
   m_EditorClassIdentifier: 
   coordinates:
   - coordinates: {x: 0, y: 0}
@@ -47,3 +47,5 @@ MonoBehaviour:
     pieceId: yellow
   - coordinates: {x: 5, y: 2}
     pieceId: pink
+  playerMoves: 0
+  pieceStack: []

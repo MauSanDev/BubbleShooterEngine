@@ -30,9 +30,9 @@ public abstract class AbstractBoard<TPiece> : MonoBehaviour where TPiece : MonoB
         }
     }
     
-    protected void PopulateBoard(LevelData levelData)
+    protected void PopulateBoard(AbstractLevelData abstractLevelData)
     {
-        foreach (var coordinate in levelData.coordinates)
+        foreach (var coordinate in abstractLevelData.coordinates)
         {
             TPiece bubblePrefab = pieceDatabase.GetPieceById(coordinate.pieceId);
 
