@@ -8,6 +8,15 @@ public class BubbleBehavior : MonoBehaviour, IPiece
 
     private BubbleState currentState = BubbleState.OnHand;
 
+    public enum BubbleColors
+    {
+        Blue,
+        Red,
+        Green,
+        Yellow,
+        Pink
+    }
+
     private enum BubbleState
     {
         OnHand,
@@ -15,12 +24,15 @@ public class BubbleBehavior : MonoBehaviour, IPiece
         Fixed
     }
 
+    public BubbleColors bubbleColor;
+
 
     public void FixBubble()
     {
         currentState = BubbleState.Fixed;
         body.bodyType = RigidbodyType2D.Static;
     }
+
 
     public void ShotBubble(Vector3 shotDirection)
     {
@@ -36,4 +48,6 @@ public class BubbleBehavior : MonoBehaviour, IPiece
             OnBubblePlaced?.Invoke(this);
         }
     }
+
+    public bool IsMatch(BubbleBehavior otherPiece) => otherPiece.bubbleColor == bubbleColor;
 }

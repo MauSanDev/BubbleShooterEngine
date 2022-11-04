@@ -63,6 +63,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6746420513356153506, guid: b4ef784c2c786264d8accfde59661805, type: 3}
+      propertyPath: bubbleColor
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 9179874367132262074, guid: b4ef784c2c786264d8accfde59661805, type: 3}
       propertyPath: m_Name
       value: PinkBubble

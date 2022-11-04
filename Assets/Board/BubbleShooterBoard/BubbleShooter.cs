@@ -19,11 +19,12 @@ public class BubbleShooter : MonoBehaviour
     private void SpawnBubble()
     {
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector3 direction = mousePos - transform.position;
+        Vector3 shooterPosition = transform.position;
+        Vector3 direction = mousePos - shooterPosition;
         direction.Normalize();
 
         //Change this positions
-        BubbleBehavior instance = Instantiate(bubblePrefab, transform.position, Quaternion.identity);
+        BubbleBehavior instance = Instantiate(bubblePrefab, shooterPosition, Quaternion.identity);
         instance.transform.SetParent(bubbleShooterBoard.transform);
 
         instance.OnBubblePlaced += bubbleShooterBoard.OnPiecePositioned;
