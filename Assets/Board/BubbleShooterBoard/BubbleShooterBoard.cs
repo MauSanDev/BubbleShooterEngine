@@ -23,12 +23,12 @@ public class BubbleShooterBoard : AbstractBoard<BubbleBehavior> //This could als
         List<BubbleBehavior> matches = new List<BubbleBehavior>();
         SearchMatches(piecePosition, piece.IsMatch, ref matches);
 
-        if (matches.Count >= 3)
+        if (matches.Count < 3) 
+            return;
+        
+        foreach (BubbleBehavior bubble in matches)
         {
-            foreach (BubbleBehavior bubble in matches)
-            {
-                MatchPiece(alignmentStrategy.LocalToGridPosition(bubble.transform.localPosition));
-            }
+            MatchPiece(alignmentStrategy.LocalToGridPosition(bubble.transform.localPosition));
         }
     }
 
@@ -38,7 +38,8 @@ public class BubbleShooterBoard : AbstractBoard<BubbleBehavior> //This could als
 
         foreach (Vector2Int neighbour in neighbourPositions)
         {
-            if(neighbour.x < 0 || neighbour.y < 0) continue;
+            if(neighbour.x < 0 || neighbour.y < 0) 
+                continue;
 
             BubbleBehavior neighbourPiece = GetPiece(neighbour);
             if (neighbourPiece != null && !matches.Contains(neighbourPiece) && matchCondition.Invoke(neighbourPiece))
@@ -49,10 +50,7 @@ public class BubbleShooterBoard : AbstractBoard<BubbleBehavior> //This could als
         }
     }
 
-    protected override void OnPieceCreated(BubbleBehavior piece)
-    {
-        piece.FixBubble();
-    }
+    protected override void OnPieceCreated(BubbleBehavior piece) => piece.FixBubble();
     
     public override void OnPiecePositioned(BubbleBehavior piece)
     {
