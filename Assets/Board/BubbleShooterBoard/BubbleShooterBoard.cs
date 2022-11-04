@@ -54,7 +54,7 @@ public class BubbleShooterBoard : AbstractBoard<BubbleBehavior> //This could als
         piece.FixBubble();
     }
     
-    public void OnPiecePositioned(BubbleBehavior piece)
+    public override void OnPiecePositioned(BubbleBehavior piece)
     {
         FixBubble(piece);
         Vector2Int piecePosition = alignmentStrategy.LocalToGridPosition(piece.transform.localPosition);

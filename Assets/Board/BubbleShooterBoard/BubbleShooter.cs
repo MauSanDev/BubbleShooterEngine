@@ -1,13 +1,9 @@
-
 using UnityEngine;
 
-public class BubbleShooter : MonoBehaviour
+public class BubbleShooter : AbstractBoardComponent<BubbleBehavior>
 {
-    [SerializeField] private BubbleShooterBoard bubbleShooterBoard;
-    [SerializeField] private BubbleBehavior bubblePrefab;
     [SerializeField] private float shotSpeed;
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -24,10 +20,10 @@ public class BubbleShooter : MonoBehaviour
         direction.Normalize();
 
         //Change this positions
-        BubbleBehavior instance = Instantiate(bubblePrefab, shooterPosition, Quaternion.identity);
-        instance.transform.SetParent(bubbleShooterBoard.transform);
+        BubbleBehavior instance = Instantiate(Board.PieceDatabase.GetPieceById("green"), shooterPosition, Quaternion.identity);
+        instance.transform.SetParent(Board.transform);
 
-        instance.OnBubblePlaced += bubbleShooterBoard.OnPiecePositioned;
+        instance.OnBubblePlaced += Board.OnPiecePositioned;
         instance.ShotBubble(direction * shotSpeed);
     }
 }

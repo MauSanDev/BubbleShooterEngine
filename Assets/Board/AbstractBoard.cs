@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Grid))]
-public abstract class AbstractBoard<TPiece> : MonoBehaviour where TPiece : MonoBehaviour, IPiece
+public abstract class AbstractBoard<TPiece> : MonoBehaviour, IBoard<TPiece> where TPiece : MonoBehaviour, IPiece
 {
-    [Header("Databases")] [SerializeField]
-    protected AbstractPieceDatabase<TPiece> pieceDatabase;
+    [Header("Databases")] 
+    [SerializeField] protected AbstractPieceDatabase<TPiece> pieceDatabase;
 
-    [Header("Components")] [SerializeField]
-    protected Grid gridComponent = null;
+    [Header("Components")] 
+    [SerializeField] protected Grid gridComponent = null;
+    [SerializeField] protected List<AbstractBoardComponent<TPiece>> boardComponents = new List<AbstractBoardComponent<TPiece>>();
 
-    protected IAlignmentStrategy alignmentStrategy;
+    protected IAlignmentStrategy alignmentStrategy = null;
 
     private Dictionary<Vector2Int, TPiece> pieceInstances = new Dictionary<Vector2Int, TPiece>();
+
+    public AbstractPieceDatabase<TPiece> PieceDatabase => pieceDatabase;
 
     private void Awake()
     {
@@ -30,20 +33,25 @@ public abstract class AbstractBoard<TPiece> : MonoBehaviour where TPiece : MonoB
         }
     }
     
-    protected void PopulateBoard(AbstractLevelData abstractLevelData)
+    protected void PopulateBoard(AbstractLevelData levelData)
     {
-        foreach (var coordinate in abstractLevelData.coordinates)
+        foreach (var VARIABLE in boardComponents)
         {
-            TPiece bubblePrefab = pieceDatabase.GetPieceById(coordinate.pieceId);
+            VARIABLE.Setup(this);
+        }
+        
+        foreach (var coordinate in levelData.coordinates)
+        {
+            TPiece piecePrefab = pieceDatabase.GetPieceById(coordinate.pieceId);
 
-            if (bubblePrefab == null)
+            if (piecePrefab == null)
             {
                 Debug.LogError(
                     $"{GetType()} :: The piece with id {coordinate.pieceId} wasn't found. - Position: {coordinate.coordinates}");
                 continue;
             }
 
-            TPiece pieceInstance = Instantiate(bubblePrefab, gridComponent.transform);
+            TPiece pieceInstance = Instantiate(piecePrefab, gridComponent.transform);
 
             pieceInstance.transform.localPosition = alignmentStrategy.GridToLocalPosition(coordinate.coordinates);
             RegisterPiece(coordinate.coordinates, pieceInstance);
@@ -102,6 +110,9 @@ public abstract class AbstractBoard<TPiece> : MonoBehaviour where TPiece : MonoB
     /// <param name="piece"></param>
     protected abstract void OnPieceCreated(TPiece piece);
 
-    protected abstract void SearchMatches(Vector2Int piecePosition, Func<BubbleBehavior, bool> matchCondition, ref List<BubbleBehavior> matches);
+    public abstract void OnPiecePositioned(BubbleBehavior piece);
 
+    protected abstract void SearchMatches(Vector2Int piecePosition, Func<BubbleBehavior, bool> matchCondition, ref List<BubbleBehavior> matches);
 }
+
+public interface IBoard<TPiece> where TPiece : MonoBehaviour, IPiece {}
