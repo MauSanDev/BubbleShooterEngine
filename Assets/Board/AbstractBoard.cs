@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Grid))]
@@ -9,7 +10,9 @@ public abstract class AbstractBoard<TPiece> : MonoBehaviour where TPiece : MonoB
     [Header("Components")] 
     [SerializeField] protected Grid gridComponent = null;
 
-    private IAlignmentStrategy alignmentStrategy;
+    protected IAlignmentStrategy alignmentStrategy;
+
+    private Dictionary<Vector2Int, TPiece> instances = new Dictionary<Vector2Int, TPiece>();
 
     private void Awake()
     {
@@ -48,10 +51,18 @@ public abstract class AbstractBoard<TPiece> : MonoBehaviour where TPiece : MonoB
             }
             
             TPiece pieceInstance = Instantiate(bubblePrefab, gridComponent.transform);
-            pieceInstance.transform.localPosition = alignmentStrategy.GetPiecePosition(coordinate.coordinates);
+            
+            pieceInstance.transform.localPosition = alignmentStrategy.GridToLocalPosition(coordinate.coordinates);
+            RegisterPiece(coordinate.coordinates, pieceInstance);
             
             OnPieceCreated(pieceInstance);
         }
+    }
+
+    protected void RegisterPiece(Vector2Int coordinate, TPiece piece)
+    {
+        Debug.Log($"Piece registered at {coordinate}");
+        instances.Add(coordinate, piece);
     }
 
     /// <summary>

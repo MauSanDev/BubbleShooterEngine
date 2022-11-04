@@ -26,7 +26,7 @@ public class BubbleShooter : MonoBehaviour
         BubbleBehavior instance = Instantiate(bubblePrefab, transform.position, Quaternion.identity);
         instance.transform.SetParent(bubbleShooterBoard.transform);
 
-        instance.OnBubblePlaced += bubbleShooterBoard.FixBubble;
+        instance.OnBubblePlaced += bubbleShooterBoard.OnPiecePositioned;
         instance.ShotBubble(direction * shotSpeed);
     }
 }

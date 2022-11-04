@@ -9,13 +9,21 @@ public class BubbleShooterBoard : AbstractBoard<BubbleBehavior> //This could als
         PopulateBoard(levelData);
     }
 
-    public void FixBubble(BubbleBehavior bubbleBehavior)
+    private void FixBubble(BubbleBehavior bubbleBehavior)
     {
         bubbleBehavior.FixBubble();
         Vector3Int pos = gridComponent.WorldToCell(bubbleBehavior.transform.position);
         bubbleBehavior.transform.position = gridComponent.GetCellCenterWorld(pos);
     }
 
+    public void OnPiecePositioned(BubbleBehavior bubbleBehavior)
+    {
+        Vector2Int piecePosition = alignmentStrategy.LocalToGridPosition(bubbleBehavior.transform.localPosition);
+        RegisterPiece(piecePosition, bubbleBehavior);
+        
+        FixBubble(bubbleBehavior);
+    }
+    
     protected override void OnPieceCreated(BubbleBehavior piece)
     {
         piece.FixBubble();
