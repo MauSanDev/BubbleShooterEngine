@@ -3,6 +3,9 @@ using UnityEngine;
 public class BubbleShooter : AbstractBoardComponent<BubblePiece, BubbleShooterBoard>
 {
     [SerializeField] private float shotSpeed;
+    private BubblePiece bubbleToShot = null;
+
+    public bool CanShot { get; set; } = true;
 
     void Update()
     {
@@ -31,20 +34,28 @@ public class BubbleShooter : AbstractBoardComponent<BubblePiece, BubbleShooterBo
 
     private void ShotBubble()
     {
-        string bubbleId = GetNextBubbleId();
-        
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector3 shooterPosition = transform.position;
-        Vector3 direction = mousePos - shooterPosition;
+        Vector3 direction = mousePos - transform.position;
         direction.Normalize();
+        
+        bubbleToShot.ShotBubble(direction * shotSpeed);
 
-        //Change this positions
-        BubblePiece instance = Instantiate(Board.PieceDatabase.GetPieceById(bubbleId), shooterPosition, Quaternion.identity);
-        instance.transform.SetParent(Board.transform);
-
-        instance.OnBubblePlaced += Board.OnPiecePositioned;
-        instance.ShotBubble(direction * shotSpeed);
+        CanShot = false;
     }
 
-    public override void UpdateComponent() { }
+    public override void UpdateComponent()
+    { 
+        if(!Board.HasRemainingMoves)
+            return;
+
+        CanShot = true;
+        
+        string bubbleId = GetNextBubbleId();
+        
+        //Change this positions
+        bubbleToShot = Instantiate(Board.PieceDatabase.GetPieceById(bubbleId), transform.position, Quaternion.identity);
+        bubbleToShot.transform.SetParent(Board.transform);
+
+        bubbleToShot.OnBubblePlaced += Board.OnPiecePositioned;
+    }
 }

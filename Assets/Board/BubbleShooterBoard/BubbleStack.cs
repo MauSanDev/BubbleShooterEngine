@@ -1,12 +1,16 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class BubbleStack : AbstractBoardComponent<BubblePiece, BubbleShooterBoard>
 {
     [SerializeField] private List<SpriteRenderer> stackSprites = new List<SpriteRenderer>();
+    [SerializeField] private TextMeshPro moveCounter = null;
     
     public override void UpdateComponent() //TODO: This should be cleaned
     {
+        moveCounter.text = Board.RemainingMoves.ToString();
+        
         for (int i = 0; i < stackSprites.Count; i++)
         {
             int stackPiece = Board.CurrentMove + i + 1;
@@ -16,7 +20,7 @@ public class BubbleStack : AbstractBoardComponent<BubblePiece, BubbleShooterBoar
             if (!hasMovesRemaining)
             {
                 stackSprites[i].color = Color.gray;
-                return;
+                continue;
             }
             
             bool hasStackRemaining = Board.LevelData.PiecesStack.Count > stackPiece;

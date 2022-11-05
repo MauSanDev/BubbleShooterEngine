@@ -1,7 +1,6 @@
-using System.Collections.Generic;
 using UnityEngine;
 
-public class BubbleShooterBoard : AbstractBoard<BubblePiece, BubbleShooterLevelData> //This could also be generic depending on the match 3 strategy
+public class BubbleShooterBoard : AbstractBoard<BubblePiece, BubbleShooterLevelData>
 {
     [SerializeField] private BubbleShooterLevelData abstractLevelData; //This should be removed and settled by the populate
 
@@ -16,25 +15,11 @@ public class BubbleShooterBoard : AbstractBoard<BubblePiece, BubbleShooterLevelD
         InitBoard(abstractLevelData);
     }
 
-    private void FixBubble(BubblePiece bubblePiece)
+    private void AttachBubble(BubblePiece bubblePiece)
     {
         bubblePiece.FixBubble();
         Vector3Int pos = gridComponent.WorldToCell(bubblePiece.transform.position);
         bubblePiece.transform.position = gridComponent.GetCellCenterWorld(pos);
-    }
-
-    private void ProcessMatches(BubblePiece piece, Vector2Int piecePosition)
-    {
-        IMatchCondition matchCondition = piece.GetMatchCondition();
-        List<BubblePiece> matches = DefaultMatchStrategy.GetMatchCandidates(piecePosition, matchCondition, this);
-
-        if (matches.Count < 3) 
-            return;
-        
-        foreach (BubblePiece bubble in matches)
-        {
-            MatchPiece(alignmentStrategy.LocalToGridPosition(bubble.transform.localPosition));
-        }
     }
 
     protected override void SetupComponents()
@@ -53,12 +38,12 @@ public class BubbleShooterBoard : AbstractBoard<BubblePiece, BubbleShooterLevelD
     
     public override void OnPiecePositioned(BubblePiece piece)
     {
-        FixBubble(piece);
+        AttachBubble(piece);
         Vector2Int piecePosition = alignmentStrategy.LocalToGridPosition(piece.transform.localPosition);
         RegisterPiece(piecePosition, piece);
 
         ProcessMatches(piece, piecePosition);
-        UpdateComponents();
         RegisterMovement();
+        UpdateComponents();
     }
 }
