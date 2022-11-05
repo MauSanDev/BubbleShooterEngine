@@ -1,21 +1,26 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+public interface IBoard<TPiece> where TPiece : AbstractPiece
+{
+    TPiece GetPiece(Vector2Int coordinate);
+}
+
 [RequireComponent(typeof(Grid))]
-public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour where TPiece : AbstractPiece where TLevelData : AbstractLevelData
+public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<TPiece> where TPiece : AbstractPiece where TLevelData : AbstractLevelData
 {
     [Header("Databases")] 
     [SerializeField] protected AbstractPieceDatabase<TPiece> pieceDatabase;
 
-    [Header("Components")] 
+    [Header("References")] 
     [SerializeField] protected Grid gridComponent = null;
-    [SerializeField] protected List<AbstractBoardComponent<TPiece, TLevelData>> boardComponents = new List<AbstractBoardComponent<TPiece, TLevelData>>();
 
     protected IAlignmentStrategy alignmentStrategy = null;
 
     private Dictionary<Vector2Int, TPiece> pieceInstances = new Dictionary<Vector2Int, TPiece>();
-    
+
+    protected abstract IMatchStrategy<TPiece> DefaultMatchStrategy { get; }
+
     public TLevelData LevelData { get; private set; }
 
     public AbstractPieceDatabase<TPiece> PieceDatabase => pieceDatabase;
@@ -40,20 +45,9 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour where TP
         }
     }
 
-    private void SetupComponents()
-    {
-        foreach (AbstractBoardComponent<TPiece, TLevelData> boardComponent in boardComponents)
-        {
-            boardComponent.Setup(this);
-        }
-    }
-    protected void UpdateComponents()
-    {
-        foreach (AbstractBoardComponent<TPiece, TLevelData> boardComponent in boardComponents)
-        {
-            boardComponent.UpdateComponent();
-        }
-    }
+    protected abstract void SetupComponents();
+
+    protected abstract void UpdateComponents();
 
     public void InitBoard(TLevelData levelData)
     {
@@ -89,7 +83,7 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour where TP
         pieceInstances.Add(coordinate, piece);
     }
 
-    protected TPiece GetPiece(Vector2Int coordinate)
+    public TPiece GetPiece(Vector2Int coordinate)
     {
         if (!pieceInstances.ContainsKey(coordinate))
         {
@@ -97,22 +91,6 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour where TP
         }
 
         return pieceInstances[coordinate];
-    }
-    
-
-    protected List<TPiece> GetNeighboursFromCoordinates(Vector2Int coordinate)
-    {
-        List<TPiece> toReturn = new List<TPiece>();
-        foreach (Vector2Int neighbourCoordinate in alignmentStrategy.GetNeighbourCoordinates(coordinate))
-        {
-            TPiece neighbour = GetPiece(neighbourCoordinate);
-            if (neighbour != null)
-            {
-                toReturn.Add(neighbour);
-            }
-        }
-
-        return toReturn;
     }
 
     protected bool MatchPiece(Vector2Int coordinate)
@@ -135,6 +113,4 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour where TP
     protected abstract void OnPieceCreated(TPiece piece);
 
     public abstract void OnPiecePositioned(BubblePiece piece);
-
-    protected abstract void SearchMatches(Vector2Int piecePosition, Func<BubblePiece, bool> matchCondition, ref List<BubblePiece> matches);
 }

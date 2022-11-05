@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BubbleShooter : AbstractBoardComponent<BubblePiece, BubbleShooterLevelData>
+public class BubbleShooter : AbstractBoardComponent<BubblePiece, BubbleShooterBoard>
 {
     [SerializeField] private float shotSpeed;
 

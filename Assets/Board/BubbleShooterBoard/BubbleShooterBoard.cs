@@ -1,10 +1,16 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BubbleShooterBoard : AbstractBoard<BubblePiece, BubbleShooterLevelData> //This could also be generic depending on the match 3 strategy
 {
     [SerializeField] private BubbleShooterLevelData abstractLevelData; //This should be removed and settled by the populate
+
+    [Header("Game Components")]
+    [SerializeField] private BubbleShooter bubbleShooter = null;
+    [SerializeField] private BubbleStack bubbleStack = null;
+    
+    protected override IMatchStrategy<BubblePiece> DefaultMatchStrategy { get; } = new BubbleShooterDefaultMatchStrategy();
+
     private void Start()
     {
         InitBoard(abstractLevelData);
@@ -19,8 +25,7 @@ public class BubbleShooterBoard : AbstractBoard<BubblePiece, BubbleShooterLevelD
 
     private void ProcessMatches(BubblePiece piece, Vector2Int piecePosition)
     {
-        List<BubblePiece> matches = new List<BubblePiece>();
-        SearchMatches(piecePosition, piece.IsMatch, ref matches);
+        List<BubblePiece> matches = DefaultMatchStrategy.GetMatches(piecePosition, piece.IsMatch, this);
 
         if (matches.Count < 3) 
             return;
@@ -31,22 +36,16 @@ public class BubbleShooterBoard : AbstractBoard<BubblePiece, BubbleShooterLevelD
         }
     }
 
-    protected override void SearchMatches(Vector2Int piecePosition, Func<BubblePiece, bool> matchCondition, ref List<BubblePiece> matches)
+    protected override void SetupComponents()
     {
-        Vector2Int[] neighbourPositions = alignmentStrategy.GetNeighbourCoordinates(piecePosition);
+        bubbleShooter.SetupComponent(this);
+        bubbleStack.SetupComponent(this);
+    }
 
-        foreach (Vector2Int neighbour in neighbourPositions)
-        {
-            if(neighbour.x < 0 || neighbour.y < 0) 
-                continue;
-
-            BubblePiece neighbourPiece = GetPiece(neighbour);
-            if (neighbourPiece != null && !matches.Contains(neighbourPiece) && matchCondition.Invoke(neighbourPiece))
-            {
-                matches.Add(neighbourPiece);
-                SearchMatches(neighbour, matchCondition, ref matches);
-            }
-        }
+    protected override void UpdateComponents()
+    {
+        bubbleShooter.UpdateComponent();
+        bubbleStack.UpdateComponent();
     }
 
     protected override void OnPieceCreated(BubblePiece piece) => piece.FixBubble();

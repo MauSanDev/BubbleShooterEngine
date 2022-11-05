@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public abstract class AbstractBoardComponent<TPiece, TLevelData> : MonoBehaviour where TPiece : AbstractPiece where TLevelData : AbstractLevelData
+public abstract class AbstractBoardComponent<TPiece, TBoard> : MonoBehaviour where TPiece : AbstractPiece where TBoard : IBoard<TPiece>
 {
-    protected AbstractBoard<TPiece, TLevelData> Board { get; private set; }
+    protected TBoard Board { get; private set; }
 
-    public void Setup(AbstractBoard<TPiece, TLevelData> board)
+    public void SetupComponent(TBoard board)
     {
         Board = board;
         UpdateComponent();

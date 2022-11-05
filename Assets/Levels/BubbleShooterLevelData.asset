@@ -47,7 +47,7 @@ MonoBehaviour:
     pieceId: yellow
   - coordinates: {x: 5, y: 2}
     pieceId: pink
-  playerMoves: 0
+  playerMoves: 12
   piecesStack:
   - green
   - red
