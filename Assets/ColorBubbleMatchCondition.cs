@@ -1,4 +1,4 @@
-public struct ColorBubbleCondition : IMatchCondition<BubblePiece>
+public class ColorBubbleCondition : AbstractMatchCondition<BubblePiece>
 {
     private BubblePiece.BubbleColors colorToMatch;
 
@@ -7,5 +7,5 @@ public struct ColorBubbleCondition : IMatchCondition<BubblePiece>
         this.colorToMatch = colorToMatch;
     }
 
-    public bool IsMatch(BubblePiece piece) => piece.bubbleColor == colorToMatch;
+    public override bool IsMatch(BubblePiece piece) => piece.bubbleColor == colorToMatch;
 }

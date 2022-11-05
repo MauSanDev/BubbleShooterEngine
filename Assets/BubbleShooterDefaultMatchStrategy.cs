@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class BubbleShooterDefaultMatchStrategy : IMatchStrategy<BubblePiece>
 {
-    public List<BubblePiece> GetMatchCandidates(Vector2Int piecePosition, IMatchCondition<BubblePiece> matchCondition, IBoard<BubblePiece> board)
+    public List<BubblePiece> GetMatchCandidates(Vector2Int piecePosition, IMatchCondition matchCondition, IBoard<BubblePiece> board)
     {
         List<BubblePiece> matches = new List<BubblePiece>();
         SearchMatches(piecePosition, matchCondition, board, ref matches);
@@ -11,7 +11,7 @@ public class BubbleShooterDefaultMatchStrategy : IMatchStrategy<BubblePiece>
         return matches;
     }
     
-    private void SearchMatches(Vector2Int piecePosition, IMatchCondition<BubblePiece> matchCondition, IBoard<BubblePiece> board, ref List<BubblePiece> matches)
+    private void SearchMatches(Vector2Int piecePosition, IMatchCondition matchCondition, IBoard<BubblePiece> board, ref List<BubblePiece> matches)
     {
         Vector2Int[] neighbourPositions = GetNeighbourCoordinates(piecePosition);
 
@@ -29,7 +29,7 @@ public class BubbleShooterDefaultMatchStrategy : IMatchStrategy<BubblePiece>
         }
     }
     
-    public Vector2Int[] GetNeighbourCoordinates(Vector2Int cellPosition)
+    private Vector2Int[] GetNeighbourCoordinates(Vector2Int cellPosition) // TODO: reanalize because of the alignment strategy
     {
         int diff = cellPosition.y % 2 == 0 ? -1 : 1;
         Vector2Int[] neighbours =

@@ -25,7 +25,7 @@ public class BubbleShooterBoard : AbstractBoard<BubblePiece, BubbleShooterLevelD
 
     private void ProcessMatches(BubblePiece piece, Vector2Int piecePosition)
     {
-        ColorBubbleCondition matchCondition = piece.GetMatchCondition();
+        IMatchCondition matchCondition = piece.GetMatchCondition();
         List<BubblePiece> matches = DefaultMatchStrategy.GetMatchCandidates(piecePosition, matchCondition, this);
 
         if (matches.Count < 3) 

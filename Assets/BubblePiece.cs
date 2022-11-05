@@ -8,7 +8,7 @@ public class BubblePiece : AbstractPiece
 
     private BubbleState currentState = BubbleState.OnHand;
 
-    public enum BubbleColors
+    public enum BubbleColors //TODO remove this
     {
         Blue,
         Red,
@@ -26,7 +26,7 @@ public class BubblePiece : AbstractPiece
 
     public BubbleColors bubbleColor;
 
-    public ColorBubbleCondition GetMatchCondition() => new ColorBubbleCondition(bubbleColor);
+    public override IMatchCondition GetMatchCondition() => new ColorBubbleCondition(bubbleColor);
 
     public void FixBubble()
     {
@@ -49,6 +49,4 @@ public class BubblePiece : AbstractPiece
             OnBubblePlaced?.Invoke(this);
         }
     }
-
-    public bool IsMatch(BubblePiece otherPiece) => otherPiece.bubbleColor == bubbleColor;
 }

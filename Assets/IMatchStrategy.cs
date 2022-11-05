@@ -7,5 +7,5 @@ using UnityEngine;
 /// <typeparam name="TPiece"></typeparam>
 public interface IMatchStrategy<TPiece> where TPiece : AbstractPiece
 {
-    List<TPiece> GetMatchCandidates(Vector2Int piecePosition, IMatchCondition<TPiece> matchCondition, IBoard<TPiece> board);
+    List<TPiece> GetMatchCandidates(Vector2Int piecePosition, IMatchCondition matchCondition, IBoard<TPiece> board);
 }
