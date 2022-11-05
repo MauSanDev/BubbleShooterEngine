@@ -81,7 +81,7 @@ TextMesh:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6609631679980762869}
-  m_Text: line
+  m_Text: vert
   m_OffsetZ: 0
   m_CharacterSize: 1
   m_LineSpacing: 1
@@ -107,9 +107,9 @@ GameObject:
   - component: {fileID: 429262181505188260}
   - component: {fileID: -4542881421280920133}
   - component: {fileID: -8618348510384450821}
-  - component: {fileID: 6143672326549002909}
+  - component: {fileID: -1887977384780586505}
   m_Layer: 0
-  m_Name: LineSpecialBubble
+  m_Name: VerticalSpecialBubble
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -218,7 +218,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &6143672326549002909
+--- !u!114 &-1887977384780586505
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -227,7 +227,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 9179874367132262074}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98828c54efc9cb24bb55ad94d0a31961, type: 3}
+  m_Script: {fileID: 11500000, guid: 8cade9476878eb94d8020c6ebe54f5fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   body: {fileID: -8618348510384450821}
