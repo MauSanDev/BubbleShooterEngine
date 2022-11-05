@@ -3,15 +3,22 @@ using UnityEngine;
 
 public class BubbleShooterDefaultMatchStrategy : IMatchStrategy<BubblePiece>
 {
-    public List<BubblePiece> GetMatchCandidates(Vector2Int piecePosition, IMatchCondition matchCondition, IBoard<BubblePiece> board)
+    public const int MIN_PIECES_TO_MATCH = 3;
+    
+    public List<Vector2Int> GetMatchCandidates(Vector2Int piecePosition, IMatchCondition matchCondition, IBoard<BubblePiece> board)
     {
-        List<BubblePiece> matches = new List<BubblePiece>();
+        List<Vector2Int> matches = new List<Vector2Int>();
         SearchMatches(piecePosition, matchCondition, board, ref matches);
 
-        return matches;
+        if (matches.Count >= MIN_PIECES_TO_MATCH)
+        {
+            return matches;
+        }
+        
+        return null;
     }
     
-    private void SearchMatches(Vector2Int piecePosition, IMatchCondition matchCondition, IBoard<BubblePiece> board, ref List<BubblePiece> matches)
+    private void SearchMatches(Vector2Int piecePosition, IMatchCondition matchCondition, IBoard<BubblePiece> board, ref List<Vector2Int> matches)
     {
         Vector2Int[] neighbourPositions = GetNeighbourCoordinates(piecePosition);
 
@@ -21,9 +28,9 @@ public class BubbleShooterDefaultMatchStrategy : IMatchStrategy<BubblePiece>
                 continue;
 
             BubblePiece neighbourPiece = board.GetPiece(neighbour);
-            if (neighbourPiece != null && !matches.Contains(neighbourPiece) && matchCondition.IsMatch(neighbourPiece))
+            if (neighbourPiece != null && !matches.Contains(neighbour) && matchCondition.IsMatch(neighbourPiece))
             {
-                matches.Add(neighbourPiece);
+                matches.Add(neighbour);
                 SearchMatches(neighbour, matchCondition, board, ref matches);
             }
         }

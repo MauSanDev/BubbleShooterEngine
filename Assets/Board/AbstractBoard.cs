@@ -1,11 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IBoard<TPiece> where TPiece : AbstractPiece
-{
-    TPiece GetPiece(Vector2Int coordinate);
-}
-
 [RequireComponent(typeof(Grid))]
 public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<TPiece> where TPiece : AbstractPiece where TLevelData : AbstractLevelData
 {
@@ -14,20 +9,44 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
 
     [Header("References")] 
     [SerializeField] protected Grid gridComponent = null;
-
+    
+    //Variables
     protected IAlignmentStrategy alignmentStrategy = null;
-
     private Dictionary<Vector2Int, TPiece> pieceInstances = new Dictionary<Vector2Int, TPiece>();
+
 
     protected abstract IMatchStrategy<TPiece> DefaultMatchStrategy { get; }
 
+    public int RemainingMoves => LevelData.PlayerMoves - CurrentMove;
+    public int CurrentMove { get; private set; } = 0;
+    public bool HasRemainingMoves => RemainingMoves > 0;
     public TLevelData LevelData { get; private set; }
 
     public AbstractPieceDatabase<TPiece> PieceDatabase => pieceDatabase;
-    public int CurrentMove { get; private set; } = 0;
-    public bool HasRemainingMoves => CurrentMove < LevelData.PlayerMoves;
 
-    protected void RegisterMovement(int toAdd = 1) => CurrentMove += toAdd;
+
+    /// <summary>
+    /// Setup the needed components when the board is Init.
+    /// </summary>
+    protected abstract void SetupComponents();
+    
+    /// <summary>
+    /// Update all the Components when needed.
+    /// </summary>
+    protected abstract void UpdateComponents();
+    
+
+    /// <summary>
+    /// Add a behavior to the piece when it is spawned on the Board creation.
+    /// </summary>
+    /// <param name="piece"></param>
+    protected abstract void OnPieceCreated(TPiece piece);
+
+    /// <summary>
+    /// Execute this callback when a new piece is positioned on the board.
+    /// </summary>
+    /// <param name="piece"></param>
+    public abstract void OnPiecePositioned(BubblePiece piece);
 
 
     private void Awake()
@@ -44,11 +63,7 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
                 return;
         }
     }
-
-    protected abstract void SetupComponents();
-
-    protected abstract void UpdateComponents();
-
+    
     public void InitBoard(TLevelData levelData)
     {
         LevelData = levelData;
@@ -56,7 +71,7 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
         PopulateBoard(levelData);
     }
     
-    protected void PopulateBoard(TLevelData levelData)
+    private void PopulateBoard(TLevelData levelData)
     {
         foreach (var coordinate in levelData.coordinates)
         {
@@ -82,6 +97,8 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
     {
         pieceInstances.Add(coordinate, piece);
     }
+    
+    protected void RegisterMovement(int toAdd = 1) => CurrentMove += toAdd;
 
     public TPiece GetPiece(Vector2Int coordinate)
     {
@@ -92,8 +109,22 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
 
         return pieceInstances[coordinate];
     }
+    
+    protected void ProcessMatches(TPiece piece, Vector2Int piecePosition)
+    {
+        IMatchCondition matchCondition = piece.GetMatchCondition();
+        List<Vector2Int> matches = DefaultMatchStrategy.GetMatchCandidates(piecePosition, matchCondition, this);
 
-    protected bool MatchPiece(Vector2Int coordinate)
+        if(matches == null)
+            return;
+        
+        foreach (Vector2Int bubble in matches)
+        {
+            MatchPiece(bubble);
+        }
+    }
+
+    private bool MatchPiece(Vector2Int coordinate)
     {
         if (!pieceInstances.ContainsKey(coordinate))
         {
@@ -105,12 +136,10 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
         Destroy(instance.gameObject);
         return true;
     }
+}
 
-    /// <summary>
-    /// Add a behavior to the piece when it is spawned.
-    /// </summary>
-    /// <param name="piece"></param>
-    protected abstract void OnPieceCreated(TPiece piece);
 
-    public abstract void OnPiecePositioned(BubblePiece piece);
+public interface IBoard<TPiece> where TPiece : AbstractPiece
+{
+    TPiece GetPiece(Vector2Int coordinate);
 }
