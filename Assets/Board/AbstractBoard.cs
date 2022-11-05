@@ -3,18 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Grid))]
-public abstract class AbstractBoard<TPiece> : MonoBehaviour, IBoard<TPiece> where TPiece : MonoBehaviour, IPiece
+public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<TPiece> where TPiece : MonoBehaviour, IPiece where TLevelData : AbstractLevelData
 {
     [Header("Databases")] 
     [SerializeField] protected AbstractPieceDatabase<TPiece> pieceDatabase;
 
     [Header("Components")] 
     [SerializeField] protected Grid gridComponent = null;
-    [SerializeField] protected List<AbstractBoardComponent<TPiece>> boardComponents = new List<AbstractBoardComponent<TPiece>>();
+    [SerializeField] protected List<AbstractBoardComponent<TPiece, TLevelData>> boardComponents = new List<AbstractBoardComponent<TPiece, TLevelData>>();
 
     protected IAlignmentStrategy alignmentStrategy = null;
 
     private Dictionary<Vector2Int, TPiece> pieceInstances = new Dictionary<Vector2Int, TPiece>();
+    
+    public TLevelData LevelData { get; private set; }
 
     public AbstractPieceDatabase<TPiece> PieceDatabase => pieceDatabase;
 
@@ -33,8 +35,10 @@ public abstract class AbstractBoard<TPiece> : MonoBehaviour, IBoard<TPiece> wher
         }
     }
     
-    protected void PopulateBoard(AbstractLevelData levelData)
+    protected void PopulateBoard(TLevelData levelData)
     {
+        LevelData = levelData;
+        
         foreach (var VARIABLE in boardComponents)
         {
             VARIABLE.Setup(this);

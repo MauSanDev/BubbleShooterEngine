@@ -8,5 +8,8 @@ public class BubbleShooterLevelData : AbstractLevelData
     [SerializeField] private int playerMoves = 0;
     
     [Tooltip("Piece IDs of the player stack. If none or not enough, will get random bubble.")]
-    [SerializeField] private List<string> pieceStack = new List<string>();
+    [SerializeField] private List<string> piecesStack = new List<string>();
+
+    public int PlayerMoves => playerMoves;
+    public List<string> PiecesStack => piecesStack;
 }

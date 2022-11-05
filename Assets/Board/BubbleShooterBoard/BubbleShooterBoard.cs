@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BubbleShooterBoard : AbstractBoard<BubbleBehavior> //This could also be generic depending on the match 3 strategy
+public class BubbleShooterBoard : AbstractBoard<BubbleBehavior, BubbleShooterLevelData> //This could also be generic depending on the match 3 strategy
 {
-    [SerializeField] private AbstractLevelData abstractLevelData; //This should be removed and settled by the populate
+    [SerializeField] private BubbleShooterLevelData abstractLevelData; //This should be removed and settled by the populate
 
     private void Start()
     {

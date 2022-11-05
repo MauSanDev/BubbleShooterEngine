@@ -48,4 +48,12 @@ MonoBehaviour:
   - coordinates: {x: 5, y: 2}
     pieceId: pink
   playerMoves: 0
-  pieceStack: []
+  piecesStack:
+  - green
+  - red
+  - blue
+  - yellow
+  - red
+  - blue
+  - pink
+  - green
