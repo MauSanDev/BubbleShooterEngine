@@ -3,13 +3,12 @@ using UnityEngine;
 public class BubbleShooter : AbstractBoardComponent<BubbleBehavior, BubbleShooterLevelData>
 {
     [SerializeField] private float shotSpeed;
-    private int currentMove = 0;
 
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if (!HasRemainingMoves)
+            if (!Board.HasRemainingMoves)
             {
                 Debug.LogError("You are out of moves!");
                 return;
@@ -19,13 +18,12 @@ public class BubbleShooter : AbstractBoardComponent<BubbleBehavior, BubbleShoote
         }
     }
 
-    private bool HasRemainingMoves => currentMove < Board.LevelData.PlayerMoves;
 
     private string GetNextBubbleId()
     {
-        if (currentMove < Board.LevelData.PiecesStack.Count)
+        if (Board.CurrentMove < Board.LevelData.PiecesStack.Count)
         {
-            return Board.LevelData.PiecesStack[currentMove];
+            return Board.LevelData.PiecesStack[Board.CurrentMove];
         }
 
         return "red"; // TODO: Return a random bubble that is on the board.
@@ -46,6 +44,7 @@ public class BubbleShooter : AbstractBoardComponent<BubbleBehavior, BubbleShoote
 
         instance.OnBubblePlaced += Board.OnPiecePositioned;
         instance.ShotBubble(direction * shotSpeed);
-        currentMove++;
     }
+
+    public override void UpdateComponent() { }
 }

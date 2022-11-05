@@ -5,10 +5,9 @@ using UnityEngine;
 public class BubbleShooterBoard : AbstractBoard<BubbleBehavior, BubbleShooterLevelData> //This could also be generic depending on the match 3 strategy
 {
     [SerializeField] private BubbleShooterLevelData abstractLevelData; //This should be removed and settled by the populate
-
     private void Start()
     {
-        PopulateBoard(abstractLevelData);
+        InitBoard(abstractLevelData);
     }
 
     private void FixBubble(BubbleBehavior bubbleBehavior)
@@ -59,5 +58,7 @@ public class BubbleShooterBoard : AbstractBoard<BubbleBehavior, BubbleShooterLev
         RegisterPiece(piecePosition, piece);
 
         ProcessMatches(piece, piecePosition);
+        UpdateComponents();
+        RegisterMovement();
     }
 }

@@ -19,6 +19,11 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
     public TLevelData LevelData { get; private set; }
 
     public AbstractPieceDatabase<TPiece> PieceDatabase => pieceDatabase;
+    public int CurrentMove { get; private set; } = 0;
+    public bool HasRemainingMoves => CurrentMove < LevelData.PlayerMoves;
+
+    protected void RegisterMovement(int toAdd = 1) => CurrentMove += toAdd;
+
 
     private void Awake()
     {
@@ -34,16 +39,31 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
                 return;
         }
     }
+
+    private void SetupComponents()
+    {
+        foreach (AbstractBoardComponent<TPiece, TLevelData> boardComponent in boardComponents)
+        {
+            boardComponent.Setup(this);
+        }
+    }
+    protected void UpdateComponents()
+    {
+        foreach (AbstractBoardComponent<TPiece, TLevelData> boardComponent in boardComponents)
+        {
+            boardComponent.UpdateComponent();
+        }
+    }
+
+    public void InitBoard(TLevelData levelData)
+    {
+        LevelData = levelData;
+        SetupComponents();
+        PopulateBoard(levelData);
+    }
     
     protected void PopulateBoard(TLevelData levelData)
     {
-        LevelData = levelData;
-        
-        foreach (var VARIABLE in boardComponents)
-        {
-            VARIABLE.Setup(this);
-        }
-        
         foreach (var coordinate in levelData.coordinates)
         {
             TPiece piecePrefab = pieceDatabase.GetPieceById(coordinate.pieceId);
