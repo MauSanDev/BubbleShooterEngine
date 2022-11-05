@@ -3,19 +3,20 @@ using UnityEngine;
 
 public class BubbleShooterDefaultMatchStrategy : IMatchStrategy<BubblePiece>
 {
-    public const int MIN_PIECES_TO_MATCH = 3;
+    private const int MIN_PIECES_TO_MATCH = 3;
     
     public List<Vector2Int> GetMatchCandidates(Vector2Int piecePosition, IMatchCondition matchCondition, IBoard<BubblePiece> board)
     {
         List<Vector2Int> matches = new List<Vector2Int>();
+        matches.Add(piecePosition);
         SearchMatches(piecePosition, matchCondition, board, ref matches);
 
-        if (matches.Count >= MIN_PIECES_TO_MATCH)
+        if (matches.Count < MIN_PIECES_TO_MATCH)
         {
-            return matches;
+            matches.RemoveAll(x => !(board.GetPiece(x) is ISpecialPiece<BubblePiece>));
         }
         
-        return null;
+        return matches;
     }
     
     private void SearchMatches(Vector2Int piecePosition, IMatchCondition matchCondition, IBoard<BubblePiece> board, ref List<Vector2Int> matches)

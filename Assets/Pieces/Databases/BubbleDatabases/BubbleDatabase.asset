@@ -23,3 +23,5 @@ MonoBehaviour:
     piecePrefab: {fileID: 6640119888683786902, guid: 6c505d876f457544bbbb9e8a6891a60a, type: 3}
   - id: pink
     piecePrefab: {fileID: 6640119888683786902, guid: c2bff63e47c9f9345adc37a9d192160e, type: 3}
+  - id: line
+    piecePrefab: {fileID: 6143672326549002909, guid: 8a240b782c547b04eab6924dfa609535, type: 3}

@@ -40,7 +40,7 @@ MonoBehaviour:
   - coordinates: {x: 1, y: 2}
     pieceId: red
   - coordinates: {x: 2, y: 2}
-    pieceId: green
+    pieceId: line
   - coordinates: {x: 3, y: 2}
     pieceId: blue
   - coordinates: {x: 4, y: 2}

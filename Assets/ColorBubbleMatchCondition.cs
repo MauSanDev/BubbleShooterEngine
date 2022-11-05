@@ -7,5 +7,8 @@ public class ColorBubbleCondition : AbstractMatchCondition<BubblePiece>
         this.colorToMatch = colorToMatch;
     }
 
-    public override bool IsMatch(BubblePiece piece) => piece.bubbleColor == colorToMatch;
+    public override bool IsMatch(BubblePiece piece)
+    {
+        return piece.bubbleColor == colorToMatch || piece is ISpecialPiece<BubblePiece>;
+    }
 }

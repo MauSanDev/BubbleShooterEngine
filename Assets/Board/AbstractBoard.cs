@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(Grid))]
@@ -109,14 +110,33 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
 
         return pieceInstances[coordinate];
     }
+
+    public bool IsPieceOnPosition(Vector2Int coordinate) => pieceInstances.ContainsKey(coordinate);
     
     protected void ProcessMatches(TPiece piece, Vector2Int piecePosition)
     {
         IMatchCondition matchCondition = piece.GetMatchCondition();
-        List<Vector2Int> matches = DefaultMatchStrategy.GetMatchCandidates(piecePosition, matchCondition, this);
+        List<Vector2Int> matches;
+        
+        if (piece is ISpecialPiece<TPiece> specialPiece)
+        {
+            matches = specialPiece.GetMatchStrategy().GetMatchCandidates(piecePosition, matchCondition, this);
+        }
+        else
+        {
+            matches = DefaultMatchStrategy.GetMatchCandidates(piecePosition, matchCondition, this);
+        }
 
-        if(matches == null)
-            return;
+        for (int i = 0; i < matches.Count; i++)
+        {
+            TPiece matchPiece = GetPiece(matches[i]);
+            if (matchPiece is ISpecialPiece<TPiece> special)
+            {
+                matches.AddRange(special.GetMatchStrategy().GetMatchCandidates(matches[i], matchPiece.GetMatchCondition(), this));
+                matches = matches.Distinct().ToList(); // use a hashset
+            }
+        }
+
         
         foreach (Vector2Int bubble in matches)
         {
@@ -132,6 +152,8 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
         }
         
         TPiece instance = pieceInstances[coordinate];
+        
+        //TODO: Add a pool
         pieceInstances.Remove(coordinate);
         Destroy(instance.gameObject);
         return true;
@@ -142,4 +164,5 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
 public interface IBoard<TPiece> where TPiece : AbstractPiece
 {
     TPiece GetPiece(Vector2Int coordinate);
+    bool IsPieceOnPosition(Vector2Int coordinate);
 }
