@@ -20,7 +20,7 @@ public interface ISpecialPiece<TPiece> where TPiece : AbstractPiece
 
 public class LineSpecialBubbleMatchStrategy : IMatchStrategy<BubblePiece>
 {
-    public List<Vector2Int> GetMatchCandidates(Vector2Int piecePosition, IMatchCondition matchCondition, IBoard<BubblePiece> board)
+    public HashSet<Vector2Int> GetMatchCandidates(Vector2Int piecePosition, IMatchCondition matchCondition, IBoard<BubblePiece> board)
     {
         HashSet<Vector2Int> matches = new HashSet<Vector2Int>();
         for (int i = 0; i < 10; i++) //TODO: Change the index to the grid X size
@@ -33,6 +33,6 @@ public class LineSpecialBubbleMatchStrategy : IMatchStrategy<BubblePiece>
             }
         }
 
-        return new List<Vector2Int>(matches);
+        return matches;
     }
 }

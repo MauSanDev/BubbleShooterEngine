@@ -5,34 +5,43 @@ public class BubbleShooterDefaultMatchStrategy : IMatchStrategy<BubblePiece>
 {
     private const int MIN_PIECES_TO_MATCH = 3;
     
-    public List<Vector2Int> GetMatchCandidates(Vector2Int piecePosition, IMatchCondition matchCondition, IBoard<BubblePiece> board)
+    public HashSet<Vector2Int> GetMatchCandidates(Vector2Int piecePosition, IMatchCondition matchCondition, IBoard<BubblePiece> board)
     {
-        List<Vector2Int> matches = new List<Vector2Int>();
-        matches.Add(piecePosition);
-        SearchMatches(piecePosition, matchCondition, board, ref matches);
+        HashSet<Vector2Int> matches = new HashSet<Vector2Int>();
+        HashSet<Vector2Int> specials = new HashSet<Vector2Int>();
 
-        if (matches.Count < MIN_PIECES_TO_MATCH)
+        matches.Add(piecePosition);
+        SearchMatches(piecePosition, matchCondition, board, ref matches, ref specials);
+
+        if (matches.Count >= MIN_PIECES_TO_MATCH)
         {
-            matches.RemoveAll(x => !(board.GetPiece(x) is ISpecialPiece<BubblePiece>));
+            specials.UnionWith(matches);
         }
         
-        return matches;
+        return specials;
     }
     
-    private void SearchMatches(Vector2Int piecePosition, IMatchCondition matchCondition, IBoard<BubblePiece> board, ref List<Vector2Int> matches)
+    private void SearchMatches(Vector2Int piecePosition, IMatchCondition matchCondition, IBoard<BubblePiece> board, ref HashSet<Vector2Int> matches, ref HashSet<Vector2Int> specials)
     {
         Vector2Int[] neighbourPositions = GetNeighbourCoordinates(piecePosition);
 
         foreach (Vector2Int neighbour in neighbourPositions)
         {
-            if(neighbour.x < 0 || neighbour.y < 0) 
+            if(neighbour.x < 0 || neighbour.y < 0 || !board.HasPieceOnPosition(neighbour)) 
                 continue;
 
             BubblePiece neighbourPiece = board.GetPiece(neighbour);
-            if (neighbourPiece != null && !matches.Contains(neighbour) && matchCondition.IsMatch(neighbourPiece))
+            if (matchCondition.IsMatch(neighbourPiece))
             {
-                matches.Add(neighbour);
-                SearchMatches(neighbour, matchCondition, board, ref matches);
+                if (neighbourPiece is ISpecialPiece<BubblePiece> && !specials.Contains(neighbour))
+                {
+                    specials.Add(neighbour);
+                }
+                else if(!matches.Contains(neighbour))
+                {
+                    matches.Add(neighbour);
+                    SearchMatches(neighbour, matchCondition, board, ref matches, ref specials);
+                }
             }
         }
     }

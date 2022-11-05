@@ -129,7 +129,7 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
         }
 
 
-        List<Vector2Int> matchCandidates = matchStrategy.GetMatchCandidates(piecePosition, matchCondition, this);
+        HashSet<Vector2Int> matchCandidates = matchStrategy.GetMatchCandidates(piecePosition, matchCondition, this);
 
         foreach (Vector2Int matchCandidate in matchCandidates)
         {
