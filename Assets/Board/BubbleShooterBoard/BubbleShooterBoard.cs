@@ -15,20 +15,25 @@ public class BubbleShooterBoard : AbstractBoard<BubblePiece, BubbleShooterLevelD
         InitBoard(abstractLevelData);
     }
 
-    private void AttachBubble(BubblePiece bubblePiece)
+    private Vector2Int AttachBubbleToBoard(BubblePiece bubblePiece)
     {
         bubblePiece.FixBubble();
         Vector3Int pos = gridComponent.WorldToCell(bubblePiece.transform.position);
         bubblePiece.transform.position = gridComponent.GetCellCenterWorld(pos);
+        
+        Vector2Int piecePosition = alignmentStrategy.LocalToGridPosition(bubblePiece.transform.localPosition);
+        RegisterPiece(piecePosition, bubblePiece);
+
+        return piecePosition;
     }
 
-    protected override void SetupComponents()
+    protected override void SetupBoardComponents()
     {
         bubbleShooter.SetupComponent(this);
         bubbleStack.SetupComponent(this);
     }
 
-    protected override void UpdateComponents()
+    protected override void UpdateBoardComponents()
     {
         bubbleShooter.UpdateComponent();
         bubbleStack.UpdateComponent();
@@ -38,12 +43,9 @@ public class BubbleShooterBoard : AbstractBoard<BubblePiece, BubbleShooterLevelD
     
     public override void OnPiecePositioned(BubblePiece piece)
     {
-        AttachBubble(piece);
-        Vector2Int piecePosition = alignmentStrategy.LocalToGridPosition(piece.transform.localPosition);
-        RegisterPiece(piecePosition, piece);
-
-        ProcessMatches(piece, piecePosition);
+        Vector2Int pieceCoordinate = AttachBubbleToBoard(piece);
+        ProcessMatches(pieceCoordinate);
         RegisterMovement();
-        UpdateComponents();
+        UpdateBoardComponents();
     }
 }

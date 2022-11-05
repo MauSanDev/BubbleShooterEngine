@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(Grid))]
@@ -11,30 +10,27 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
     [Header("References")] 
     [SerializeField] protected Grid gridComponent = null;
     
-    //Variables
     protected IAlignmentStrategy alignmentStrategy = null;
     private Dictionary<Vector2Int, TPiece> pieceInstances = new Dictionary<Vector2Int, TPiece>();
 
 
     protected abstract IMatchStrategy<TPiece> DefaultMatchStrategy { get; }
-
+    public AbstractPieceDatabase<TPiece> PieceDatabase => pieceDatabase;
     public int RemainingMoves => LevelData.PlayerMoves - CurrentMove;
     public int CurrentMove { get; private set; } = 0;
     public bool HasRemainingMoves => RemainingMoves > 0;
     public TLevelData LevelData { get; private set; }
 
-    public AbstractPieceDatabase<TPiece> PieceDatabase => pieceDatabase;
-
-
+    
     /// <summary>
     /// Setup the needed components when the board is Init.
     /// </summary>
-    protected abstract void SetupComponents();
+    protected abstract void SetupBoardComponents();
     
     /// <summary>
     /// Update all the Components when needed.
     /// </summary>
-    protected abstract void UpdateComponents();
+    protected abstract void UpdateBoardComponents();
     
 
     /// <summary>
@@ -68,7 +64,7 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
     public void InitBoard(TLevelData levelData)
     {
         LevelData = levelData;
-        SetupComponents();
+        SetupBoardComponents();
         PopulateBoard(levelData);
     }
     
@@ -111,36 +107,43 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
         return pieceInstances[coordinate];
     }
 
-    public bool IsPieceOnPosition(Vector2Int coordinate) => pieceInstances.ContainsKey(coordinate);
+    public bool HasPieceOnPosition(Vector2Int coordinate) => pieceInstances.ContainsKey(coordinate);
     
-    protected void ProcessMatches(TPiece piece, Vector2Int piecePosition)
+    /// <summary>
+    /// Analyze the board for possible matches.
+    /// </summary>
+    protected void ProcessMatches(Vector2Int piecePosition)
     {
-        IMatchCondition matchCondition = piece.GetMatchCondition();
-        List<Vector2Int> matches;
+        TPiece pieceToProcess = GetPiece(piecePosition);
+        IMatchCondition matchCondition = pieceToProcess.GetMatchCondition();
         
-        if (piece is ISpecialPiece<TPiece> specialPiece)
+        IMatchStrategy<TPiece> matchStrategy = null;
+
+        if (pieceToProcess is ISpecialPiece<TPiece> specialPiece)
         {
-            matches = specialPiece.GetMatchStrategy().GetMatchCandidates(piecePosition, matchCondition, this);
+            matchStrategy = specialPiece.GetMatchStrategy();
         }
         else
         {
-            matches = DefaultMatchStrategy.GetMatchCandidates(piecePosition, matchCondition, this);
+            matchStrategy = DefaultMatchStrategy;
         }
 
-        for (int i = 0; i < matches.Count; i++)
+
+        List<Vector2Int> matchCandidates = matchStrategy.GetMatchCandidates(piecePosition, matchCondition, this);
+
+        foreach (Vector2Int matchCandidate in matchCandidates)
         {
-            TPiece matchPiece = GetPiece(matches[i]);
-            if (matchPiece is ISpecialPiece<TPiece> special)
+            if(!HasPieceOnPosition(matchCandidate))
+                continue;
+            
+            TPiece matchPiece = GetPiece(matchCandidate);
+            bool isTheSamePiece = piecePosition == matchCandidate;
+            if (!isTheSamePiece && matchPiece is ISpecialPiece<TPiece>)
             {
-                matches.AddRange(special.GetMatchStrategy().GetMatchCandidates(matches[i], matchPiece.GetMatchCondition(), this));
-                matches = matches.Distinct().ToList(); // use a hashset
+                ProcessMatches(matchCandidate);
             }
-        }
 
-        
-        foreach (Vector2Int bubble in matches)
-        {
-            MatchPiece(bubble);
+            MatchPiece(matchCandidate);
         }
     }
 
@@ -164,5 +167,5 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
 public interface IBoard<TPiece> where TPiece : AbstractPiece
 {
     TPiece GetPiece(Vector2Int coordinate);
-    bool IsPieceOnPosition(Vector2Int coordinate);
+    bool HasPieceOnPosition(Vector2Int coordinate);
 }

@@ -22,17 +22,17 @@ public class LineSpecialBubbleMatchStrategy : IMatchStrategy<BubblePiece>
 {
     public List<Vector2Int> GetMatchCandidates(Vector2Int piecePosition, IMatchCondition matchCondition, IBoard<BubblePiece> board)
     {
-        List<Vector2Int> matches = new List<Vector2Int>();
-        matches.Add(piecePosition);
-        for (int i = 0; i < 10; i++)
+        HashSet<Vector2Int> matches = new HashSet<Vector2Int>();
+        for (int i = 0; i < 10; i++) //TODO: Change the index to the grid X size
         {
             Vector2Int position = new Vector2Int(i, piecePosition.y);
-            if (board.IsPieceOnPosition(position))
+
+            if (board.HasPieceOnPosition(position))
             {
                 matches.Add(position);
             }
         }
 
-        return matches;
+        return new List<Vector2Int>(matches);
     }
 }
