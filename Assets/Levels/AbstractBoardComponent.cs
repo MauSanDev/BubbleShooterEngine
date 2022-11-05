@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public abstract class AbstractBoardComponent<TPiece, TLevelData> : MonoBehaviour where TPiece : MonoBehaviour, IPiece where TLevelData : AbstractLevelData
+public abstract class AbstractBoardComponent<TPiece, TLevelData> : MonoBehaviour where TPiece : AbstractPiece where TLevelData : AbstractLevelData
 {
     protected AbstractBoard<TPiece, TLevelData> Board { get; private set; }
 

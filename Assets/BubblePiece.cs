@@ -1,10 +1,10 @@
 using System;
 using UnityEngine;
 
-public class BubbleBehavior : MonoBehaviour, IPiece
+public class BubblePiece : AbstractPiece
 {
     [SerializeField] private Rigidbody2D body;
-    public event Action<BubbleBehavior> OnBubblePlaced;
+    public event Action<BubblePiece> OnBubblePlaced;
 
     private BubbleState currentState = BubbleState.OnHand;
 
@@ -49,5 +49,5 @@ public class BubbleBehavior : MonoBehaviour, IPiece
         }
     }
 
-    public bool IsMatch(BubbleBehavior otherPiece) => otherPiece.bubbleColor == bubbleColor;
+    public bool IsMatch(BubblePiece otherPiece) => otherPiece.bubbleColor == bubbleColor;
 }

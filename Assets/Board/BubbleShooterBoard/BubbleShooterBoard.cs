@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BubbleShooterBoard : AbstractBoard<BubbleBehavior, BubbleShooterLevelData> //This could also be generic depending on the match 3 strategy
+public class BubbleShooterBoard : AbstractBoard<BubblePiece, BubbleShooterLevelData> //This could also be generic depending on the match 3 strategy
 {
     [SerializeField] private BubbleShooterLevelData abstractLevelData; //This should be removed and settled by the populate
     private void Start()
@@ -10,28 +10,28 @@ public class BubbleShooterBoard : AbstractBoard<BubbleBehavior, BubbleShooterLev
         InitBoard(abstractLevelData);
     }
 
-    private void FixBubble(BubbleBehavior bubbleBehavior)
+    private void FixBubble(BubblePiece bubblePiece)
     {
-        bubbleBehavior.FixBubble();
-        Vector3Int pos = gridComponent.WorldToCell(bubbleBehavior.transform.position);
-        bubbleBehavior.transform.position = gridComponent.GetCellCenterWorld(pos);
+        bubblePiece.FixBubble();
+        Vector3Int pos = gridComponent.WorldToCell(bubblePiece.transform.position);
+        bubblePiece.transform.position = gridComponent.GetCellCenterWorld(pos);
     }
 
-    private void ProcessMatches(BubbleBehavior piece, Vector2Int piecePosition)
+    private void ProcessMatches(BubblePiece piece, Vector2Int piecePosition)
     {
-        List<BubbleBehavior> matches = new List<BubbleBehavior>();
+        List<BubblePiece> matches = new List<BubblePiece>();
         SearchMatches(piecePosition, piece.IsMatch, ref matches);
 
         if (matches.Count < 3) 
             return;
         
-        foreach (BubbleBehavior bubble in matches)
+        foreach (BubblePiece bubble in matches)
         {
             MatchPiece(alignmentStrategy.LocalToGridPosition(bubble.transform.localPosition));
         }
     }
 
-    protected override void SearchMatches(Vector2Int piecePosition, Func<BubbleBehavior, bool> matchCondition, ref List<BubbleBehavior> matches)
+    protected override void SearchMatches(Vector2Int piecePosition, Func<BubblePiece, bool> matchCondition, ref List<BubblePiece> matches)
     {
         Vector2Int[] neighbourPositions = alignmentStrategy.GetNeighbourCoordinates(piecePosition);
 
@@ -40,7 +40,7 @@ public class BubbleShooterBoard : AbstractBoard<BubbleBehavior, BubbleShooterLev
             if(neighbour.x < 0 || neighbour.y < 0) 
                 continue;
 
-            BubbleBehavior neighbourPiece = GetPiece(neighbour);
+            BubblePiece neighbourPiece = GetPiece(neighbour);
             if (neighbourPiece != null && !matches.Contains(neighbourPiece) && matchCondition.Invoke(neighbourPiece))
             {
                 matches.Add(neighbourPiece);
@@ -49,9 +49,9 @@ public class BubbleShooterBoard : AbstractBoard<BubbleBehavior, BubbleShooterLev
         }
     }
 
-    protected override void OnPieceCreated(BubbleBehavior piece) => piece.FixBubble();
+    protected override void OnPieceCreated(BubblePiece piece) => piece.FixBubble();
     
-    public override void OnPiecePositioned(BubbleBehavior piece)
+    public override void OnPiecePositioned(BubblePiece piece)
     {
         FixBubble(piece);
         Vector2Int piecePosition = alignmentStrategy.LocalToGridPosition(piece.transform.localPosition);

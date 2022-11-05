@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BubbleShooter : AbstractBoardComponent<BubbleBehavior, BubbleShooterLevelData>
+public class BubbleShooter : AbstractBoardComponent<BubblePiece, BubbleShooterLevelData>
 {
     [SerializeField] private float shotSpeed;
 
@@ -39,7 +39,7 @@ public class BubbleShooter : AbstractBoardComponent<BubbleBehavior, BubbleShoote
         direction.Normalize();
 
         //Change this positions
-        BubbleBehavior instance = Instantiate(Board.PieceDatabase.GetPieceById(bubbleId), shooterPosition, Quaternion.identity);
+        BubblePiece instance = Instantiate(Board.PieceDatabase.GetPieceById(bubbleId), shooterPosition, Quaternion.identity);
         instance.transform.SetParent(Board.transform);
 
         instance.OnBubblePlaced += Board.OnPiecePositioned;

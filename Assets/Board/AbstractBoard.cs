@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Grid))]
-public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<TPiece> where TPiece : MonoBehaviour, IPiece where TLevelData : AbstractLevelData
+public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour where TPiece : AbstractPiece where TLevelData : AbstractLevelData
 {
     [Header("Databases")] 
     [SerializeField] protected AbstractPieceDatabase<TPiece> pieceDatabase;
@@ -134,9 +134,7 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
     /// <param name="piece"></param>
     protected abstract void OnPieceCreated(TPiece piece);
 
-    public abstract void OnPiecePositioned(BubbleBehavior piece);
+    public abstract void OnPiecePositioned(BubblePiece piece);
 
-    protected abstract void SearchMatches(Vector2Int piecePosition, Func<BubbleBehavior, bool> matchCondition, ref List<BubbleBehavior> matches);
+    protected abstract void SearchMatches(Vector2Int piecePosition, Func<BubblePiece, bool> matchCondition, ref List<BubblePiece> matches);
 }
-
-public interface IBoard<TPiece> where TPiece : MonoBehaviour, IPiece {}

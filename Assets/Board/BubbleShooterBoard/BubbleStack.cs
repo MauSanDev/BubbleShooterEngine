@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BubbleStack : AbstractBoardComponent<BubbleBehavior, BubbleShooterLevelData>
+public class BubbleStack : AbstractBoardComponent<BubblePiece, BubbleShooterLevelData>
 {
     [SerializeField] private List<SpriteRenderer> stackSprites = new List<SpriteRenderer>();
     
