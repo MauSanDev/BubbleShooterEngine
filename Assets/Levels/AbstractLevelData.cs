@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "LevelData", menuName = "Level Data")]
 public abstract class AbstractLevelData : ScriptableObject
 {
     [Header("Board Info")]
