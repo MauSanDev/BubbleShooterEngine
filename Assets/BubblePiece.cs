@@ -26,6 +26,7 @@ public class BubblePiece : AbstractPiece
 
     public BubbleColors bubbleColor;
 
+    public ColorBubbleCondition GetMatchCondition() => new ColorBubbleCondition(bubbleColor);
 
     public void FixBubble()
     {
