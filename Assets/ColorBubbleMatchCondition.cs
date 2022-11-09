@@ -1,14 +1,14 @@
 public class ColorBubbleCondition : AbstractMatchCondition<BubblePiece>
 {
-    private BubblePiece.BubbleColors colorToMatch;
+    private string bubbleId;
 
-    public ColorBubbleCondition(BubblePiece.BubbleColors colorToMatch)
+    public ColorBubbleCondition(string bubbleId)
     {
-        this.colorToMatch = colorToMatch;
+        this.bubbleId = bubbleId;
     }
 
     public override bool IsMatch(BubblePiece piece)
     {
-        return piece.bubbleColor == colorToMatch || piece is ISpecialPiece<BubblePiece>;
+        return piece.AssignedID == bubbleId || piece is ISpecialPiece<BubblePiece>;
     }
 }

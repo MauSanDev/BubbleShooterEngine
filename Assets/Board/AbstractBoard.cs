@@ -12,6 +12,7 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
     
     protected IAlignmentStrategy alignmentStrategy = null;
     private Dictionary<Vector2Int, TPiece> pieceInstances = new Dictionary<Vector2Int, TPiece>();
+    private Dictionary<string, ObjectPool<TPiece>> piecePools = new Dictionary<string, ObjectPool<TPiece>>();
 
 
     protected abstract IMatchStrategy<TPiece> DefaultMatchStrategy { get; }
@@ -72,17 +73,7 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
     {
         foreach (var coordinate in levelData.coordinates)
         {
-            TPiece piecePrefab = pieceDatabase.GetPieceById(coordinate.pieceId);
-
-            if (piecePrefab == null)
-            {
-                Debug.LogError(
-                    $"{GetType()} :: The piece with id {coordinate.pieceId} wasn't found. - Position: {coordinate.coordinates}");
-                continue;
-            }
-
-            TPiece pieceInstance = Instantiate(piecePrefab, gridComponent.transform);
-
+            TPiece pieceInstance = CreatePiece(coordinate.pieceId, gridComponent.transform.position);
             pieceInstance.transform.localPosition = alignmentStrategy.GridToLocalPosition(coordinate.coordinates);
             RegisterPiece(coordinate.coordinates, pieceInstance);
 
@@ -90,10 +81,40 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
         }
     }
 
-    protected void RegisterPiece(Vector2Int coordinate, TPiece piece)
+    private ObjectPool<TPiece> GetPiecePool(string pieceId)
     {
-        pieceInstances.Add(coordinate, piece);
+        if (piecePools.ContainsKey(pieceId))
+        {
+            return piecePools[pieceId];
+        }
+
+        TPiece piecePrefab = pieceDatabase.GetPieceById(pieceId);
+
+        if (piecePrefab == null)
+        {
+            Debug.LogError(
+                $"{GetType()} :: The piece with id {pieceId} wasn't found.");
+            return null;
+        }
+        
+        ObjectPool<TPiece> newPool = new ObjectPool<TPiece>(piecePrefab, transform, 100);
+        piecePools.Add(pieceId, newPool);
+
+        return newPool;
     }
+
+
+    public TPiece CreatePiece(string pieceId, Vector3 spawnPosition)
+    {
+        TPiece pieceInstance = GetPiecePool(pieceId).GetElement();
+        pieceInstance.gameObject.SetActive(true);
+        pieceInstance.transform.position = spawnPosition;
+        pieceInstance.AssignPieceID(pieceId);
+        return pieceInstance;
+    }
+
+    protected void RegisterPiece(Vector2Int coordinate, TPiece piece) => pieceInstances.Add(coordinate, piece);
+    protected void UnregisterPiece(Vector2Int coordinate) => pieceInstances.Remove(coordinate);
     
     protected void RegisterMovement(int toAdd = 1) => CurrentMove += toAdd;
 
@@ -154,11 +175,11 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
             return false;
         }
         
-        TPiece instance = pieceInstances[coordinate];
+        TPiece matchedPiece = pieceInstances[coordinate];
+        matchedPiece.gameObject.SetActive(false);
+        GetPiecePool(matchedPiece.AssignedID).ReturnElement(matchedPiece);
+        UnregisterPiece(coordinate);
         
-        //TODO: Add a pool
-        pieceInstances.Remove(coordinate);
-        Destroy(instance.gameObject);
         return true;
     }
 }

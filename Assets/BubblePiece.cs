@@ -1,22 +1,14 @@
 using System;
+using TMPro;
 using UnityEngine;
 
 public class BubblePiece : AbstractPiece
 {
     [SerializeField] private Rigidbody2D body;
+    [SerializeField] private TextMeshPro label;
     public event Action<BubblePiece> OnBubblePlaced;
 
     private BubbleState currentState = BubbleState.OnHand;
-
-    public enum BubbleColors //TODO remove this
-    {
-        Blue,
-        Red,
-        Green,
-        Yellow,
-        Pink
-    }
-
     private enum BubbleState
     {
         OnHand,
@@ -24,12 +16,13 @@ public class BubblePiece : AbstractPiece
         Fixed
     }
 
-    public BubbleColors bubbleColor;
+    private void SetLabel() => label.text = AssignedID;
 
-    public override IMatchCondition GetMatchCondition() => new ColorBubbleCondition(bubbleColor);
+    public override IMatchCondition GetMatchCondition() => new ColorBubbleCondition(AssignedID);
 
     public void FixBubble()
     {
+        SetLabel();
         currentState = BubbleState.Fixed;
         body.bodyType = RigidbodyType2D.Static;
     }

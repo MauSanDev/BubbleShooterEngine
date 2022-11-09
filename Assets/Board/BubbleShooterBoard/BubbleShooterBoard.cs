@@ -43,6 +43,7 @@ public class BubbleShooterBoard : AbstractBoard<BubblePiece, BubbleShooterLevelD
     
     public override void OnPiecePositioned(BubblePiece piece)
     {
+        piece.OnBubblePlaced -= OnPiecePositioned; //TODO: Doesn't sound good
         Vector2Int pieceCoordinate = AttachBubbleToBoard(piece);
         ProcessMatches(pieceCoordinate);
         RegisterMovement();

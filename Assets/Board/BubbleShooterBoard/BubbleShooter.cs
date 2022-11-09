@@ -52,10 +52,7 @@ public class BubbleShooter : AbstractBoardComponent<BubblePiece, BubbleShooterBo
         
         string bubbleId = GetNextBubbleId();
         
-        //Change this positions
-        bubbleToShot = Instantiate(Board.PieceDatabase.GetPieceById(bubbleId), transform.position, Quaternion.identity);
-        bubbleToShot.transform.SetParent(Board.transform);
-
+        bubbleToShot = Board.CreatePiece(bubbleId, transform.position);
         bubbleToShot.OnBubblePlaced += Board.OnPiecePositioned;
     }
 }
