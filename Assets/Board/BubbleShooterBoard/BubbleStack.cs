@@ -22,15 +22,11 @@ public class BubbleStack : AbstractBoardComponent<BubblePiece, BubbleShooterBoar
                 stackSprites[i].color = Color.gray;
                 continue;
             }
-            
-            bool hasStackRemaining = Board.LevelData.PiecesStack.Count > stackPiece;
 
-            string nextPiece = hasStackRemaining
-                ? Board.LevelData.PiecesStack[stackPiece]
-                : "red";
+            string nextPiece = Board.GetBubbleForMovement(stackPiece);
+            Debug.Log(nextPiece + stackPiece);
             stackSprites[i].color = Board.PieceDatabase.GetPieceById(nextPiece)
                 .GetComponent<SpriteRenderer>().color;
         }
     }
-
 }

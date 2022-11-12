@@ -7,7 +7,8 @@ public class BubbleShooterBoard : AbstractBoard<BubblePiece, BubbleShooterLevelD
     [Header("Game Components")]
     [SerializeField] private BubbleShooter bubbleShooter = null;
     [SerializeField] private BubbleStack bubbleStack = null;
-    
+    private PieceQueue bubbleQueue = new PieceQueue();
+
     protected override IMatchStrategy<BubblePiece> DefaultMatchStrategy { get; } = new BubbleShooterDefaultMatchStrategy();
 
     private void Start()
@@ -29,12 +30,14 @@ public class BubbleShooterBoard : AbstractBoard<BubblePiece, BubbleShooterLevelD
 
     protected override void SetupBoardComponents()
     {
+        bubbleQueue.Setup(LevelData.PiecesStack, LevelData.PlayerMoves);
         bubbleShooter.SetupComponent(this);
         bubbleStack.SetupComponent(this);
     }
 
     protected override void UpdateBoardComponents()
     {
+        bubbleQueue.Recalculate(CurrentMove, ref pieceTypeCounter);
         bubbleShooter.UpdateComponent();
         bubbleStack.UpdateComponent();
     }
@@ -49,4 +52,7 @@ public class BubbleShooterBoard : AbstractBoard<BubblePiece, BubbleShooterLevelD
         RegisterMovement();
         UpdateBoardComponents();
     }
+
+    public string GetNextBubbleId() => bubbleQueue.GetPieceForMovement(CurrentMove);
+    public string GetBubbleForMovement(int movement) => bubbleQueue.GetPieceForMovement(movement);
 }

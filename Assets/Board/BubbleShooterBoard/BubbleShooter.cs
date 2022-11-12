@@ -22,15 +22,6 @@ public class BubbleShooter : AbstractBoardComponent<BubblePiece, BubbleShooterBo
     }
 
 
-    private string GetNextBubbleId()
-    {
-        if (Board.CurrentMove < Board.LevelData.PiecesStack.Count)
-        {
-            return Board.LevelData.PiecesStack[Board.CurrentMove];
-        }
-
-        return "red"; // TODO: Return a random bubble that is on the board.
-    }
 
     private void ShotBubble()
     {
@@ -50,7 +41,7 @@ public class BubbleShooter : AbstractBoardComponent<BubblePiece, BubbleShooterBo
 
         CanShot = true;
         
-        string bubbleId = GetNextBubbleId();
+        string bubbleId = Board.GetNextBubbleId();
         
         bubbleToShot = Board.CreatePiece(bubbleId, transform.position);
         bubbleToShot.OnBubblePlaced += Board.OnPiecePositioned;

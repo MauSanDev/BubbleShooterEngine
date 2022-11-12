@@ -13,7 +13,7 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
     protected IAlignmentStrategy alignmentStrategy = null;
     private Dictionary<Vector2Int, TPiece> pieceInstances = new Dictionary<Vector2Int, TPiece>();
     private Dictionary<string, ObjectPool<TPiece>> piecePools = new Dictionary<string, ObjectPool<TPiece>>();
-
+    protected Dictionary<string, int> pieceTypeCounter = new Dictionary<string, int>();
 
     protected abstract IMatchStrategy<TPiece> DefaultMatchStrategy { get; }
     public AbstractPieceDatabase<TPiece> PieceDatabase => pieceDatabase;
@@ -113,8 +113,34 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
         return pieceInstance;
     }
 
-    protected void RegisterPiece(Vector2Int coordinate, TPiece piece) => pieceInstances.Add(coordinate, piece);
-    protected void UnregisterPiece(Vector2Int coordinate) => pieceInstances.Remove(coordinate);
+    protected void RegisterPiece(Vector2Int coordinate, TPiece piece)
+    {
+        CountPiece(piece.AssignedID);
+        pieceInstances.Add(coordinate, piece);
+    }
+
+    private void CountPiece(string piece)
+    {
+        if (pieceTypeCounter.ContainsKey(piece))
+        {
+            pieceTypeCounter[piece]++;
+            return;
+        }
+
+        pieceTypeCounter.Add(piece, 1);
+    }
+
+    private void UnregisterPiece(Vector2Int coordinate)
+    {
+        string pieceId = pieceInstances[coordinate].AssignedID;
+        pieceTypeCounter[pieceId]--;
+        if (pieceTypeCounter[pieceId] == 0)
+        {
+            pieceTypeCounter.Remove(pieceId);
+        }
+        
+        pieceInstances.Remove(coordinate);
+    }
     
     protected void RegisterMovement(int toAdd = 1) => CurrentMove += toAdd;
 
