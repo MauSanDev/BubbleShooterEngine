@@ -20,7 +20,7 @@ public class PieceQueue
         }
     }
 
-    public void Recalculate(int currentMove, List<string> availablePieces, int piecesToRecalculate = 3)
+    public void Recalculate(int currentMove, SpawnRateHandler<string> availablePieces, int piecesToRecalculate = 3)
     {
         currentMove++;
 
@@ -33,7 +33,7 @@ public class PieceQueue
             
             if (isModifiable && canBeReassigned)
             {
-                string toAssign = availablePieces[UnityEngine.Random.Range(0, availablePieces.Count)];
+                string toAssign = availablePieces.GetRandom();
                 calculatedQueue[i].AssignId(toAssign);
             }
         }

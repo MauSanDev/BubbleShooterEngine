@@ -46,4 +46,18 @@ public class PieceHandler<TPiece> where TPiece : AbstractPiece
 
         return toReturn;
     }
+
+    public SpawnRateHandler<string> GetPieceSpawnHandler()
+    {
+        SpawnRateHandler<string> toReturn = new SpawnRateHandler<string>();
+        foreach (var pieceId in pieceCounter)
+        {
+            if (pieceCounter.GetAmount(pieceId.Key) > 0)
+            {
+                toReturn.Register(pieceId.Key, pieceId.Value);
+            }
+        }
+
+        return toReturn;
+    }
 }

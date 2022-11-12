@@ -37,7 +37,7 @@ public class BubbleShooterBoard : AbstractBoard<BubblePiece, BubbleShooterLevelD
 
     protected override void UpdateBoardComponents()
     {
-        bubbleQueue.Recalculate(CurrentMove, pieceHandler.GetExistingPieces());
+        bubbleQueue.Recalculate(CurrentMove, pieceHandler.GetPieceSpawnHandler());
         bubbleShooter.UpdateComponent();
         bubbleStack.UpdateComponent();
     }
