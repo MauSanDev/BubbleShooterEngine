@@ -2,32 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct StackedPieceData
-{
-    public static StackedPieceData CreateStatic(string pieceId)
-    {
-        return new StackedPieceData()
-        {
-            pieceId = pieceId,
-            modifiable = false
-        };
-    }
-
-    public static StackedPieceData CreateModifiable(string pieceId = null)
-    {
-        return new StackedPieceData()
-        {
-            pieceId = null,
-            modifiable = true
-        };
-    }
-            
-    public string pieceId;
-    public bool modifiable;
-
-    public void AssignId(string newCoso) => pieceId = newCoso;
-}
-
 public class PieceQueue
 {
     private StackedPieceData[] calculatedQueue;
@@ -50,11 +24,11 @@ public class PieceQueue
     {
         currentMove++;
         List<string> availablePieces = new List<string>();
-        foreach (var VARIABLE in pieceCount.Keys)
+        foreach (string pieceId in pieceCount.Keys)
         {
-            if (pieceCount[VARIABLE] > 0)
+            if (pieceCount[pieceId] > 0)
             {
-                availablePieces.Add(VARIABLE);
+                availablePieces.Add(pieceId);
             }
         }
 
@@ -63,9 +37,9 @@ public class PieceQueue
         for (int i = currentMove; i < toModify; i++)
         {
             bool isModifiable = calculatedQueue[i].modifiable;
-            bool canBeReasigned = calculatedQueue[i].pieceId == null || !availablePieces.Contains(calculatedQueue[i].pieceId);
+            bool canBeReassigned = calculatedQueue[i].pieceId == null || !availablePieces.Contains(calculatedQueue[i].pieceId);
             
-            if (isModifiable && canBeReasigned)
+            if (isModifiable && canBeReassigned)
             {
                 string toAssign = availablePieces[UnityEngine.Random.Range(0, availablePieces.Count)];
                 calculatedQueue[i].AssignId(toAssign);
@@ -80,5 +54,31 @@ public class PieceQueue
             throw new Exception($"{GetType()} :: The stack doesn't contains an id for the movement {movement}");
         }
         return calculatedQueue[movement].pieceId;
+    }
+    
+    public struct StackedPieceData
+    {
+        public static StackedPieceData CreateStatic(string pieceId)
+        {
+            return new StackedPieceData()
+            {
+                pieceId = pieceId,
+                modifiable = false
+            };
+        }
+
+        public static StackedPieceData CreateModifiable(string pieceId = null)
+        {
+            return new StackedPieceData()
+            {
+                pieceId = null,
+                modifiable = true
+            };
+        }
+            
+        public string pieceId;
+        public bool modifiable;
+
+        public void AssignId(string newCoso) => pieceId = newCoso;
     }
 }

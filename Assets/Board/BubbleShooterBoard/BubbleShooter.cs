@@ -21,8 +21,6 @@ public class BubbleShooter : AbstractBoardComponent<BubblePiece, BubbleShooterBo
         }
     }
 
-
-
     private void ShotBubble()
     {
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);

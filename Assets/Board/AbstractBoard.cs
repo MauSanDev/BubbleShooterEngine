@@ -12,8 +12,9 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
     
     protected IAlignmentStrategy alignmentStrategy = null;
     private Dictionary<Vector2Int, TPiece> pieceInstances = new Dictionary<Vector2Int, TPiece>();
-    private Dictionary<string, ObjectPool<TPiece>> piecePools = new Dictionary<string, ObjectPool<TPiece>>();
     protected Dictionary<string, int> pieceTypeCounter = new Dictionary<string, int>();
+
+    private PieceHandler<TPiece, TLevelData> pieceHandler = new PieceHandler<TPiece, TLevelData>();
 
     protected abstract IMatchStrategy<TPiece> DefaultMatchStrategy { get; }
     public AbstractPieceDatabase<TPiece> PieceDatabase => pieceDatabase;
@@ -49,6 +50,7 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
 
     private void Awake()
     {
+        pieceHandler.Initialize(this);
         DefineAlignmentStrategy();
     }
 
@@ -81,33 +83,10 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
         }
     }
 
-    private ObjectPool<TPiece> GetPiecePool(string pieceId)
-    {
-        if (piecePools.ContainsKey(pieceId))
-        {
-            return piecePools[pieceId];
-        }
-
-        TPiece piecePrefab = pieceDatabase.GetPieceById(pieceId);
-
-        if (piecePrefab == null)
-        {
-            Debug.LogError(
-                $"{GetType()} :: The piece with id {pieceId} wasn't found.");
-            return null;
-        }
-        
-        ObjectPool<TPiece> newPool = new ObjectPool<TPiece>(piecePrefab, transform, 100);
-        piecePools.Add(pieceId, newPool);
-
-        return newPool;
-    }
-
 
     public TPiece CreatePiece(string pieceId, Vector3 spawnPosition)
     {
-        TPiece pieceInstance = GetPiecePool(pieceId).GetElement();
-        pieceInstance.gameObject.SetActive(true);
+        TPiece pieceInstance = pieceHandler.GetPiece(pieceId);
         pieceInstance.transform.position = spawnPosition;
         pieceInstance.AssignPieceID(pieceId);
         return pieceInstance;
@@ -202,8 +181,7 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
         }
         
         TPiece matchedPiece = pieceInstances[coordinate];
-        matchedPiece.gameObject.SetActive(false);
-        GetPiecePool(matchedPiece.AssignedID).ReturnElement(matchedPiece);
+        pieceHandler.ReturnPiece(matchedPiece);
         UnregisterPiece(coordinate);
         
         return true;
