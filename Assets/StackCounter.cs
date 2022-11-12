@@ -12,7 +12,10 @@ public class StackCounter<T> : Dictionary<T, int>
         }
         
         this[element] += amount;
+        OnStack(element, amount);
     }
+    
+    protected virtual void OnStack(T element, int amount = 1) {}
 
     public int GetAmount(T type)
     {
@@ -32,7 +35,11 @@ public class StackCounter<T> : Dictionary<T, int>
         }
         
         this[element] = Mathf.Max(0, this[element] - amount);
+        OnPop(element, amount);
     }
+    
+    
+    protected virtual void OnPop(T element, int amount = 1) {}
 
     public int TotalStacks
     {

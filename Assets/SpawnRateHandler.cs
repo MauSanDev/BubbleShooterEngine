@@ -1,33 +1,17 @@
-﻿using System.Collections.Generic;
-
-public class SpawnRateHandler<T>
+﻿public class SpawnRateHandler<T> : StackCounter<T>
 {
-    private Dictionary<T,  int> content = new Dictionary<T, int>();
     private int totalRate = 0;
 
-    public void Register(T key, int spawnRate)
+    protected override void OnStack(T element, int amount = 1)
     {
-        if(IsRegistered(key) || spawnRate == 0)
-        {
-            return;
-        }
-
-        content.Add(key, spawnRate);
-        totalRate += spawnRate;
+        totalRate += amount;
     }
 
-    public int this[T element]
+    protected override void OnPop(T element, int amount = 1)
     {
-        get => content[element];
-        set
-        {
-            int dif = content[element] - value;
-            totalRate -= dif;
-            content[element] = value;
-        }
+        totalRate -= amount;
     }
 
-    public bool IsRegistered(T key) => content.ContainsKey(key);
 
     public bool TryGetByRate(int rate, out T spawn)
     {
@@ -39,9 +23,9 @@ public class SpawnRateHandler<T>
 
         int count = 0;
         
-        foreach (T element in content.Keys)
+        foreach (T element in Keys)
         {
-            int itemWeight = content[element];
+            int itemWeight = this[element];
             count += itemWeight;
             if (rate <= count)
             {
@@ -58,9 +42,9 @@ public class SpawnRateHandler<T>
     {
         int count = 0;
         int randomSpawn = UnityEngine.Random.Range(0, totalRate + 1); 
-        foreach (T element in content.Keys)
+        foreach (T element in Keys)
         {
-            int itemWeight = content[element];
+            int itemWeight = this[element];
             count += itemWeight;
             if (randomSpawn <= count)
             {
@@ -70,9 +54,8 @@ public class SpawnRateHandler<T>
         return default(T);
     }
 
-    public int RegistriesAmount => content.Count;
 
     public int TotalRate => totalRate;
 
-    public bool Contains(T element) => content.ContainsKey(element);
+    public bool Contains(T element) => ContainsKey(element);
 }

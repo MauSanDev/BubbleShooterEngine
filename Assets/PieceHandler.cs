@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class PieceHandler<TPiece> where TPiece : AbstractPiece
 {
     private Dictionary<Vector2Int, TPiece> pieceInstances = new Dictionary<Vector2Int, TPiece>();
-    private StackCounter<string> pieceCounter = new StackCounter<string>();
+    private SpawnRateHandler<string> pieceCounter = new SpawnRateHandler<string>();
 
     public TPiece GetPiece(Vector2Int coordinate)
     {
@@ -33,31 +33,5 @@ public class PieceHandler<TPiece> where TPiece : AbstractPiece
 
     public bool HasPieceOnPosition(Vector2Int coordinate) => pieceInstances.ContainsKey(coordinate);
 
-    public List<string> GetExistingPieces()
-    {
-        List<string> toReturn = new List<string>();
-        foreach (string pieceId in pieceCounter.Keys)
-        {
-            if (pieceCounter.GetAmount(pieceId) > 0)
-            {
-                toReturn.Add(pieceId);
-            }
-        }
-
-        return toReturn;
-    }
-
-    public SpawnRateHandler<string> GetPieceSpawnHandler()
-    {
-        SpawnRateHandler<string> toReturn = new SpawnRateHandler<string>();
-        foreach (var pieceId in pieceCounter)
-        {
-            if (pieceCounter.GetAmount(pieceId.Key) > 0)
-            {
-                toReturn.Register(pieceId.Key, pieceId.Value);
-            }
-        }
-
-        return toReturn;
-    }
+    public SpawnRateHandler<string> GetPieceSpawnHandler() => pieceCounter;
 }
