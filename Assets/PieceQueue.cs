@@ -28,10 +28,7 @@ public class PieceQueue
             
         for (int i = currentMove; i < toModify; i++)
         {
-            bool isModifiable = calculatedQueue[i].modifiable;
-            bool canBeReassigned = calculatedQueue[i].pieceId == null || !availablePieces.Contains(calculatedQueue[i].pieceId);
-            
-            if (isModifiable && canBeReassigned)
+            if (calculatedQueue[i].IsModifiable && !availablePieces.Contains(calculatedQueue[i].PieceID))
             {
                 string toAssign = availablePieces.GetRandom();
                 calculatedQueue[i].AssignId(toAssign);
@@ -45,11 +42,17 @@ public class PieceQueue
         {
             throw new Exception($"{GetType()} :: The stack doesn't contains an id for the movement {movement}");
         }
-        return calculatedQueue[movement].pieceId;
+        return calculatedQueue[movement].PieceID;
     }
     
     public struct StackedPieceData
     {
+        private string pieceId;
+        private bool modifiable;
+        
+        public string PieceID => pieceId;
+        public bool IsModifiable => modifiable && !string.IsNullOrEmpty(pieceId);
+        
         public static StackedPieceData CreateStatic(string pieceId)
         {
             return new StackedPieceData()
@@ -59,7 +62,7 @@ public class PieceQueue
             };
         }
 
-        public static StackedPieceData CreateModifiable(string pieceId = null)
+        public static StackedPieceData CreateModifiable()
         {
             return new StackedPieceData()
             {
@@ -67,9 +70,6 @@ public class PieceQueue
                 modifiable = true
             };
         }
-            
-        public string pieceId;
-        public bool modifiable;
 
         public void AssignId(string newCoso) => pieceId = newCoso;
     }
