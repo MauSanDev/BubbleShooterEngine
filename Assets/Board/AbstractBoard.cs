@@ -11,10 +11,9 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
     [SerializeField] protected Grid gridComponent = null;
     
     protected IAlignmentStrategy alignmentStrategy = null;
-    private Dictionary<Vector2Int, TPiece> pieceInstances = new Dictionary<Vector2Int, TPiece>();
-    protected Dictionary<string, int> pieceTypeCounter = new Dictionary<string, int>();
 
-    private PieceHandler<TPiece, TLevelData> pieceHandler = new PieceHandler<TPiece, TLevelData>();
+    protected PieceHandler<TPiece> pieceHandler = new PieceHandler<TPiece>();
+    private PiecePoolHandler<TPiece, TLevelData> piecePoolHandler = new PiecePoolHandler<TPiece, TLevelData>();
 
     protected abstract IMatchStrategy<TPiece> DefaultMatchStrategy { get; }
     public AbstractPieceDatabase<TPiece> PieceDatabase => pieceDatabase;
@@ -50,7 +49,7 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
 
     private void Awake()
     {
-        pieceHandler.Initialize(this);
+        piecePoolHandler.Initialize(this);
         DefineAlignmentStrategy();
     }
 
@@ -77,7 +76,7 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
         {
             TPiece pieceInstance = CreatePiece(coordinate.pieceId, gridComponent.transform.position);
             pieceInstance.transform.localPosition = alignmentStrategy.GridToLocalPosition(coordinate.coordinates);
-            RegisterPiece(coordinate.coordinates, pieceInstance);
+            pieceHandler.RegisterPiece(coordinate.coordinates, pieceInstance);
 
             OnPieceCreated(pieceInstance);
         }
@@ -86,54 +85,16 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
 
     public TPiece CreatePiece(string pieceId, Vector3 spawnPosition)
     {
-        TPiece pieceInstance = pieceHandler.GetPiece(pieceId);
+        TPiece pieceInstance = piecePoolHandler.GetPiece(pieceId);
         pieceInstance.transform.position = spawnPosition;
         pieceInstance.AssignPieceID(pieceId);
         return pieceInstance;
     }
-
-    protected void RegisterPiece(Vector2Int coordinate, TPiece piece)
-    {
-        CountPiece(piece.AssignedID);
-        pieceInstances.Add(coordinate, piece);
-    }
-
-    private void CountPiece(string piece)
-    {
-        if (pieceTypeCounter.ContainsKey(piece))
-        {
-            pieceTypeCounter[piece]++;
-            return;
-        }
-
-        pieceTypeCounter.Add(piece, 1);
-    }
-
-    private void UnregisterPiece(Vector2Int coordinate)
-    {
-        string pieceId = pieceInstances[coordinate].AssignedID;
-        pieceTypeCounter[pieceId]--;
-        if (pieceTypeCounter[pieceId] == 0)
-        {
-            pieceTypeCounter.Remove(pieceId);
-        }
-        
-        pieceInstances.Remove(coordinate);
-    }
-    
     protected void RegisterMovement(int toAdd = 1) => CurrentMove += toAdd;
 
-    public TPiece GetPiece(Vector2Int coordinate)
-    {
-        if (!pieceInstances.ContainsKey(coordinate))
-        {
-            return null;
-        }
+    public TPiece GetPiece(Vector2Int coordinate) => pieceHandler.GetPiece(coordinate);
 
-        return pieceInstances[coordinate];
-    }
-
-    public bool HasPieceOnPosition(Vector2Int coordinate) => pieceInstances.ContainsKey(coordinate);
+    public bool HasPieceOnPosition(Vector2Int coordinate) => pieceHandler.HasPieceOnPosition(coordinate);
     
     /// <summary>
     /// Analyze the board for possible matches.
@@ -175,14 +136,14 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
 
     private bool MatchPiece(Vector2Int coordinate)
     {
-        if (!pieceInstances.ContainsKey(coordinate))
+        if (!pieceHandler.HasPieceOnPosition(coordinate))
         {
             return false;
         }
         
-        TPiece matchedPiece = pieceInstances[coordinate];
-        pieceHandler.ReturnPiece(matchedPiece);
-        UnregisterPiece(coordinate);
+        TPiece matchedPiece = pieceHandler.GetPiece(coordinate);
+        pieceHandler.UnregisterPiece(coordinate);
+        piecePoolHandler.ReturnPiece(matchedPiece);
         
         return true;
     }

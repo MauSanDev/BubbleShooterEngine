@@ -20,17 +20,9 @@ public class PieceQueue
         }
     }
 
-    public void Recalculate(int currentMove, ref Dictionary<string, int> pieceCount, int piecesToRecalculate = 3)
+    public void Recalculate(int currentMove, List<string> availablePieces, int piecesToRecalculate = 3)
     {
         currentMove++;
-        List<string> availablePieces = new List<string>();
-        foreach (string pieceId in pieceCount.Keys)
-        {
-            if (pieceCount[pieceId] > 0)
-            {
-                availablePieces.Add(pieceId);
-            }
-        }
 
         int toModify = Mathf.Min(currentMove + piecesToRecalculate, calculatedQueue.Length);
             

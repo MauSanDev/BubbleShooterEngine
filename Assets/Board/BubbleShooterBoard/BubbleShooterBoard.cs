@@ -23,7 +23,7 @@ public class BubbleShooterBoard : AbstractBoard<BubblePiece, BubbleShooterLevelD
         bubblePiece.transform.position = gridComponent.GetCellCenterWorld(pos);
         
         Vector2Int piecePosition = alignmentStrategy.LocalToGridPosition(bubblePiece.transform.localPosition);
-        RegisterPiece(piecePosition, bubblePiece);
+        pieceHandler.RegisterPiece(piecePosition, bubblePiece);
 
         return piecePosition;
     }
@@ -37,7 +37,7 @@ public class BubbleShooterBoard : AbstractBoard<BubblePiece, BubbleShooterLevelD
 
     protected override void UpdateBoardComponents()
     {
-        bubbleQueue.Recalculate(CurrentMove, ref pieceTypeCounter);
+        bubbleQueue.Recalculate(CurrentMove, pieceHandler.GetExistingPieces());
         bubbleShooter.UpdateComponent();
         bubbleStack.UpdateComponent();
     }
