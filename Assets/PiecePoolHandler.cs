@@ -31,7 +31,7 @@ public class PiecePoolHandler<TPiece, TLevelData> where TPiece : AbstractPiece w
             return piecePools[pieceId];
         }
 
-        TPiece piecePrefab = board.PieceDatabase.GetPieceById(pieceId);
+        TPiece piecePrefab = board.Database.GetElementById(pieceId);
 
         if (piecePrefab == null)
         {

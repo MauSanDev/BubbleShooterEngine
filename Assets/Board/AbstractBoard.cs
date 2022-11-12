@@ -5,7 +5,8 @@ using UnityEngine;
 public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<TPiece> where TPiece : AbstractPiece where TLevelData : AbstractLevelData
 {
     [Header("Databases")] 
-    [SerializeField] protected AbstractPieceDatabase<TPiece> pieceDatabase;
+    [SerializeField] protected AbstractDatabase<TPiece> database;
+    [SerializeField] protected OverlayDatabase overlayDatabase;
 
     [Header("References")] 
     [SerializeField] protected Grid gridComponent = null;
@@ -16,7 +17,7 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
     private PiecePoolHandler<TPiece, TLevelData> piecePoolHandler = new PiecePoolHandler<TPiece, TLevelData>();
 
     protected abstract IMatchStrategy<TPiece> DefaultMatchStrategy { get; }
-    public AbstractPieceDatabase<TPiece> PieceDatabase => pieceDatabase;
+    public AbstractDatabase<TPiece> Database => database;
     public int RemainingMoves => LevelData.PlayerMoves - CurrentMove;
     public int CurrentMove { get; private set; } = 0;
     public bool HasRemainingMoves => RemainingMoves > 0;
@@ -78,6 +79,11 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
             pieceInstance.transform.localPosition = alignmentStrategy.GridToLocalPosition(coordinate.coordinates);
             pieceHandler.RegisterPiece(coordinate.coordinates, pieceInstance);
 
+            foreach (string overlayId in coordinate.overlayIds)
+            {
+                pieceInstance.CreateOverlay(overlayDatabase.GetElementById(overlayId));
+            }
+            
             OnPieceCreated(pieceInstance);
         }
     }
@@ -142,6 +148,7 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
         }
         
         TPiece matchedPiece = pieceHandler.GetPiece(coordinate);
+        matchedPiece.ProcessAndRemoveOverlays(this);
         pieceHandler.UnregisterPiece(coordinate);
         piecePoolHandler.ReturnPiece(matchedPiece);
         
@@ -149,8 +156,13 @@ public abstract class AbstractBoard<TPiece, TLevelData> : MonoBehaviour, IBoard<
     }
 }
 
+public interface IBoard
+{
+    
+}
 
-public interface IBoard<TPiece> where TPiece : AbstractPiece
+
+public interface IBoard<TPiece> : IBoard where TPiece : AbstractPiece
 {
     TPiece GetPiece(Vector2Int coordinate);
     bool HasPieceOnPosition(Vector2Int coordinate);

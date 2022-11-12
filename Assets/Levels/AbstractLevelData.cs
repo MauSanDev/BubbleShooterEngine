@@ -19,5 +19,6 @@ public abstract class AbstractLevelData : ScriptableObject
     {
         [SerializeField] public Vector2Int coordinates;
         [SerializeField] public string pieceId;
+        [SerializeField] public List<string> overlayIds;
     }
 }

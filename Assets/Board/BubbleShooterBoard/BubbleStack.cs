@@ -24,7 +24,7 @@ public class BubbleStack : AbstractBoardComponent<BubblePiece, BubbleShooterBoar
             }
 
             string nextPiece = Board.GetBubbleForMovement(stackPiece);
-            stackSprites[i].color = Board.PieceDatabase.GetPieceById(nextPiece)
+            stackSprites[i].color = Board.Database.GetElementById(nextPiece)
                 .GetComponent<SpriteRenderer>().color;
         }
     }
