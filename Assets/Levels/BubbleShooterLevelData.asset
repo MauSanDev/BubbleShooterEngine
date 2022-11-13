@@ -15,38 +15,56 @@ MonoBehaviour:
   coordinates:
   - coordinates: {x: 0, y: 0}
     pieceId: blue
+    overlayIds: []
   - coordinates: {x: 1, y: 0}
     pieceId: red
+    overlayIds: []
   - coordinates: {x: 2, y: 0}
     pieceId: green
+    overlayIds: []
   - coordinates: {x: 3, y: 0}
     pieceId: yellow
+    overlayIds: []
   - coordinates: {x: 4, y: 0}
     pieceId: pink
+    overlayIds: []
   - coordinates: {x: 5, y: 0}
     pieceId: green
+    overlayIds: []
   - coordinates: {x: 0, y: 1}
     pieceId: pink
+    overlayIds: []
   - coordinates: {x: 1, y: 1}
     pieceId: red
+    overlayIds: []
   - coordinates: {x: 2, y: 1}
     pieceId: blue
+    overlayIds: []
   - coordinates: {x: 3, y: 1}
     pieceId: pink
+    overlayIds: []
   - coordinates: {x: 4, y: 1}
     pieceId: blue
+    overlayIds:
+    - log
   - coordinates: {x: 0, y: 2}
     pieceId: green
+    overlayIds: []
   - coordinates: {x: 1, y: 2}
     pieceId: red
+    overlayIds: []
   - coordinates: {x: 3, y: 3}
     pieceId: line
+    overlayIds: []
   - coordinates: {x: 3, y: 2}
     pieceId: line
+    overlayIds: []
   - coordinates: {x: 4, y: 2}
     pieceId: yellow
+    overlayIds: []
   - coordinates: {x: 5, y: 2}
     pieceId: pink
+    overlayIds: []
   playerMoves: 12
   piecesStack:
   - bomb

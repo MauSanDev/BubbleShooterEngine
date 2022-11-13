@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3c5732785ad36a40a0e7ec039293940, type: 3}
   m_Name: OverlayDatabase
   m_EditorClassIdentifier: 
-  elementReferences: []
+  elementReferences:
+  - id: log
+    piecePrefab: {fileID: 2108644670555415743, guid: 562790be109c8fa41bd9d6ec55a3ec97, type: 3}

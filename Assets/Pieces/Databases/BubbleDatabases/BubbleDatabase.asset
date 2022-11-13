@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58dcd792750d06848801086b848c3131, type: 3}
   m_Name: BubbleDatabase
   m_EditorClassIdentifier: 
-  pieceReferences:
+  elementReferences:
   - id: blue
     piecePrefab: {fileID: 6746420513356153506, guid: b4ef784c2c786264d8accfde59661805, type: 3}
   - id: red
@@ -25,7 +25,7 @@ MonoBehaviour:
     piecePrefab: {fileID: 6640119888683786902, guid: c2bff63e47c9f9345adc37a9d192160e, type: 3}
   - id: line
     piecePrefab: {fileID: 6143672326549002909, guid: 8a240b782c547b04eab6924dfa609535, type: 3}
-  - id: vertical
-    piecePrefab: {fileID: -1887977384780586505, guid: 23476ff34530ddc4d8abd76930b88c48, type: 3}
   - id: bomb
     piecePrefab: {fileID: 9080816889066841823, guid: fc781d717b69be14fb25b1d35e0c0b21, type: 3}
+  - id: vertical
+    piecePrefab: {fileID: -1887977384780586505, guid: 23476ff34530ddc4d8abd76930b88c48, type: 3}
